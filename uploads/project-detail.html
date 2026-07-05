@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Project — Raihana Sakhi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Instrument+Serif:ital@0;1&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <script src="image-slot.js"></script>
+  <style>
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#FAF7F0;color:#171522;font-family:'Instrument Sans','Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    ::selection{background:#C6F24E;color:#171522}
+    body::after{content:'';position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+    @keyframes pageIn{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+    @keyframes wordUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes deviceIn{from{opacity:0;transform:scale(.95) translateY(18px)}to{opacity:1;transform:none}}
+    @keyframes floatP{from{transform:translateY(4px)}to{transform:translateY(-8px)}}
+    @keyframes gradShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+    @keyframes lbIn{from{opacity:0}to{opacity:1}}
+    @keyframes lbIn{from{opacity:0}to{opacity:1}}
+    @keyframes lbZoom{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+    @keyframes panelIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+    [data-rv]{opacity:0;transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    [data-rv="up"]{transform:translateY(30px)}
+    [data-rv="pop"]{transform:scale(.86)}
+    [data-rv][data-shown]{opacity:1 !important;transform:none !important}
+    @media(max-width:759px){
+      .meta-sticky{position:static !important;top:auto !important;max-width:100% !important}
+    }
+  </style>
+</helmet>
+
+<div id="cur" aria-hidden="true" style="position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;background:#5B3DF5;z-index:999;pointer-events:none;opacity:0;will-change:transform"></div>
+<div id="pbar" aria-hidden="true" style="position:fixed;top:0;left:0;height:4px;width:0%;background:{{accent}};z-index:96;border-radius:0 999px 999px 0"></div>
+<div id="lightbox" role="dialog" aria-label="Image viewer" style="position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(15,14,23,.9);padding:clamp(14px,3vw,40px);cursor:zoom-out;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">
+  <span aria-hidden="true" style="position:absolute;top:20px;right:26px;width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);color:#fff;display:grid;place-items:center;font-size:22px;font-family:'Space Grotesk',sans-serif">✕</span>
+  <img id="lightbox-img" alt="" style="max-width:96vw;max-height:90vh;width:auto;height:auto;border-radius:12px;box-shadow:0 40px 100px rgba(0,0,0,.55)">
+</div>
+
+<sc-if value="{{lbOpen}}" hint-placeholder-val="{{ false }}">
+<div role="dialog" aria-label="Process artifact viewer" style="position:fixed;inset:0;z-index:210;display:flex;align-items:center;justify-content:center;background:rgba(15,14,23,.92);padding:clamp(14px,3vw,40px);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);animation:lbIn .25s ease both">
+  <button type="button" aria-label="Close" onClick="{{ closeLb }}" style="position:absolute;top:20px;right:26px;width:48px;height:48px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:transparent;color:#fff;display:grid;place-items:center;font-size:22px;font-family:'Space Grotesk',sans-serif;cursor:pointer">✕</button>
+  <sc-if value="{{lbHasPrev}}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="Previous" onClick="{{ lbPrev }}" style="position:absolute;left:clamp(10px,3vw,34px);top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(15,14,23,.4);color:#fff;font-size:22px;display:grid;place-items:center;cursor:pointer">←</button></sc-if>
+  <sc-if value="{{lbHasNext}}" hint-placeholder-val="{{ true }}"><button type="button" aria-label="Next" onClick="{{ lbNext }}" style="position:absolute;right:clamp(10px,3vw,34px);top:50%;transform:translateY(-50%);width:52px;height:52px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);background:rgba(15,14,23,.4);color:#fff;font-size:22px;display:grid;place-items:center;cursor:pointer">→</button></sc-if>
+  <div style="display:flex;flex-direction:column;align-items:center;gap:16px;max-width:96vw;max-height:92vh">
+    {{lbEl}}
+    <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+      <div style="color:#fff;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:15px">{{lbTitle}}</div>
+      <div style="color:rgba(255,255,255,.6);font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.1em">{{lbCount}}</div>
+    </div>
+  </div>
+</div>
+</sc-if>
+
+<nav id="nav" aria-label="Main" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1160px,94vw);z-index:80;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px 10px 22px;border-radius:999px;border:1px solid transparent;background:transparent;transition:background .35s ease,box-shadow .35s ease,border-color .35s ease">
+  <a href="Portfolio.dc.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#171522;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px"><span style="color:#5B3DF5;font-size:18px;line-height:1">✦</span><span>Hana's Portfolio</span></a>
+  <div id="navlinks" style="display:flex;align-items:center;gap:2px">
+    <a href="Portfolio.dc.html#about" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">About Me</a>
+    <a href="Portfolio.dc.html#project" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Project</a>
+    <a href="Portfolio.dc.html#experience" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Experience</a>
+    <a href="#contact" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Contact Me</a>
+  </div>
+</nav>
+
+<div id="top" style="animation:pageIn .7s cubic-bezier(.22,1,.36,1) both">
+
+<header data-screen-label="Project Hero" style="position:relative;padding-top:clamp(130px,17vh,185px);text-align:center">
+  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(820px 420px at 50% -10%,{{glowSoft}},transparent 70%)"></div>
+  <div style="position:relative;width:min(900px,92vw);margin:0 auto">
+    <div style="display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.2em;color:#5C5870;animation:wordUp .6s cubic-bezier(.22,1,.36,1) both"><span style="width:9px;height:9px;border-radius:50%;background:{{accent}}"></span>{{kicker}}</div>
+    <h1 style="margin:18px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(48px,8vw,96px);line-height:1.04;letter-spacing:-0.03em;display:flex;flex-wrap:wrap;justify-content:center;gap:0 0.24em">
+      <sc-for list="{{titleWords}}" as="w" hint-placeholder-count="1">
+        <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) {{w.d}} both">{{w.t}}</span>
+      </sc-for>
+    </h1>
+    <p style="margin:22px auto 0;max-width:600px;font-size:clamp(16px,2vw,19px);line-height:1.65;color:#5C5870;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .45s both">{{subtitle}}</p>
+  </div>
+
+  <div data-screen-label="Hero Mockup" style="width:min(1140px,92vw);margin:clamp(40px,6vw,64px) auto 0">
+    <div style="position:relative;border:1.5px solid rgba(23,21,34,.12);border-radius:32px;overflow:hidden;background:radial-gradient(760px 400px at 50% 8%,{{glow}},transparent 72%),#FFFDF8;box-shadow:0 2px 0 rgba(23,21,34,.04)">
+      <div data-para="0.06" style="min-height:clamp(340px,42vw,540px);display:flex;align-items:center;justify-content:center;will-change:transform">
+        <sc-if value="{{heroImgOn}}" hint-placeholder-val="{{ false }}">
+          <div style="width:100%;display:flex;align-items:center;justify-content:center;padding:clamp(20px,3.5vw,48px);animation:deviceIn .9s cubic-bezier(.22,1,.36,1) .2s both">
+            {{heroImgEl}}
+          </div>
+        </sc-if>
+        <sc-if value="{{heroLaptop}}" hint-placeholder-val="{{ false }}">
+          <div style="position:relative;width:min(66%,640px);animation:deviceIn .9s cubic-bezier(.22,1,.36,1) .2s both">
+            <div style="border:10px solid #1A1825;border-radius:18px 18px 9px 9px;background:#1A1825;overflow:hidden;box-shadow:0 40px 80px rgba(23,21,34,.22)">
+              <div style="position:relative;aspect-ratio:16/10;background:#fff"><image-slot id="{{dSlot}}" shape="rect" placeholder="Drop desktop / dashboard UI" style="position:absolute;inset:0;width:100%;height:100%;display:block"></image-slot></div>
+            </div>
+            <div style="height:15px;background:linear-gradient(#E4E0D6,#BDB8AC);border-radius:2px 2px 14px 14px;width:114%;margin-left:-7%;box-shadow:0 16px 30px rgba(23,21,34,.16)"></div>
+            <div data-anim style="position:absolute;right:-9%;bottom:-4%;width:clamp(110px,12vw,150px);animation:floatP 6s ease-in-out infinite alternate">
+              <div style="position:relative;border:6px solid #1A1825;border-radius:26px;overflow:hidden;background:#fff;box-shadow:0 30px 56px rgba(23,21,34,.3)">
+                <div style="position:relative;aspect-ratio:9/19;background:#fff"><image-slot id="{{pASlot}}" shape="rect" placeholder="Mobile UI" style="position:absolute;inset:0;width:100%;height:100%;display:block"></image-slot></div>
+                <div style="position:absolute;top:7px;left:50%;transform:translateX(-50%);width:42%;height:10px;background:#1A1825;border-radius:999px"></div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+        <sc-if value="{{heroPhones}}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;align-items:center;justify-content:center;gap:clamp(20px,3vw,40px);animation:deviceIn .9s cubic-bezier(.22,1,.36,1) .2s both;padding:clamp(30px,4vw,54px) 0">
+            <div style="width:clamp(150px,17vw,210px);transform:rotate(-6deg)">
+              <div style="position:relative;border:7px solid #1A1825;border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 34px 64px rgba(23,21,34,.26)">
+                <div style="position:relative;aspect-ratio:9/19;background:#fff"><image-slot id="{{pASlot}}" shape="rect" placeholder="App screen" style="position:absolute;inset:0;width:100%;height:100%;display:block"></image-slot></div>
+                <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:42%;height:11px;background:#1A1825;border-radius:999px"></div>
+              </div>
+            </div>
+            <div data-anim style="width:clamp(150px,17vw,210px);margin-top:44px;animation:floatP 6.2s ease-in-out infinite alternate">
+              <div style="transform:rotate(5deg)">
+                <div style="position:relative;border:7px solid #1A1825;border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 34px 64px rgba(23,21,34,.26)">
+                  <div style="position:relative;aspect-ratio:9/19;background:#fff"><image-slot id="{{pBSlot}}" shape="rect" placeholder="App screen" style="position:absolute;inset:0;width:100%;height:100%;display:block"></image-slot></div>
+                  <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:42%;height:11px;background:#1A1825;border-radius:999px"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</header>
+
+<section data-screen-label="Project Meta" style="padding:clamp(60px,8vw,100px) 0 0">
+  <div style="width:min(1140px,92vw);margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(36px,5vw,72px);align-items:start">
+    <div class="meta-sticky" style="position:sticky;top:110px;display:flex;flex-direction:column;gap:26px;max-width:340px">
+      <div><div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;color:#8B87A0">PROJECT TYPE</div><div style="margin-top:8px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px">{{ptype}}</div></div>
+      <div style="height:1px;background:rgba(23,21,34,.1)"></div>
+      <div><div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;color:#8B87A0">CATEGORY</div><div style="margin-top:8px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;line-height:1.45">{{category}}</div></div>
+      <div style="height:1px;background:rgba(23,21,34,.1)"></div>
+      <div><div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;color:#8B87A0">MY ROLE</div><div style="margin-top:8px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;line-height:1.45">{{role}}</div></div>
+      <sc-if value="{{hasClient}}" hint-placeholder-val="{{ false }}">
+        <div style="height:1px;background:rgba(23,21,34,.1)"></div>
+        <div><div style="font-family:'Space Mono',monospace;font-size:11px;letter-spacing:.22em;color:#8B87A0">CLIENT</div><div style="margin-top:8px;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:18px;line-height:1.45">{{client}}</div></div>
+      </sc-if>
+      <sc-if value="{{hasPreview}}" hint-placeholder-val="{{ true }}">
+      <a href="{{previewUrl}}" target="_blank" rel="noopener" data-mag style="display:inline-flex;align-items:center;justify-content:center;gap:10px;margin-top:6px;text-decoration:none;background:{{accent}};color:{{onAccent}};font-family:inherit;font-weight:600;font-size:15.5px;padding:15px 28px;border-radius:999px;box-shadow:4px 6px 0 rgba(23,21,34,.85);border:1.5px solid #171522;transition:box-shadow .3s ease" style-hover="box-shadow:2px 3px 0 rgba(23,21,34,.85)">Live Preview ↗</a>
+      </sc-if>
+    </div>
+    <div>
+      <h2 data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,3.6vw,42px);line-height:1.18;letter-spacing:-0.02em">{{introHead}}</h2>
+      <p data-rv="up" data-rvd=".08s" style="margin:22px 0 0;font-size:17px;line-height:1.75;color:#5C5870">{{intro1}}</p>
+      <p data-rv="up" data-rvd=".14s" style="margin:16px 0 0;font-size:17px;line-height:1.75;color:#5C5870">{{intro2}}</p>
+    </div>
+  </div>
+</section>
+
+<sc-if value="{{overviewOn}}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Overview Banner" style="padding:clamp(56px,7vw,90px) 0 0">
+  <div style="width:min(1140px,92vw);margin:0 auto">
+    <div data-rv="up" data-csimg style="border:1.5px solid rgba(23,21,34,.12);border-radius:30px;overflow:hidden;background:{{soft}};transition:border-color .3s ease,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="border-color:{{accent}};transform:translateY(-6px);box-shadow:0 22px 50px rgba(23,21,34,.1)">
+      <sc-if value="{{bannerImgOn}}" hint-placeholder-val="{{ false }}">{{bannerEl}}</sc-if>
+      <sc-if value="{{bannerSlotOn}}" hint-placeholder-val="{{ true }}"><image-slot id="{{bannerSlot}}" shape="rect" placeholder="Drop project overview infographic" style="display:block;width:100%;aspect-ratio:21/9"></image-slot></sc-if>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<section data-screen-label="Goals & Approach" style="padding:clamp(70px,9vw,110px) 0 0">
+  <div style="width:min(1140px,92vw);margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr));gap:clamp(36px,5vw,72px);align-items:start">
+    <div class="meta-sticky" style="position:sticky;top:110px">
+      <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;color:{{accent}};font-weight:700">✦ THE BRIEF</div>
+      <h2 data-rv="up" style="margin:14px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);line-height:1.1;letter-spacing:-0.025em">Project Goals and <em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:{{accent}}">Design Approach</em></h2>
+    </div>
+    <div>
+      <p data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(19px,2.2vw,24px);line-height:1.4;color:#171522;letter-spacing:-0.01em">{{goalsHead}}</p>
+      <p data-rv="up" data-rvd=".06s" style="margin:20px 0 0;font-size:17px;line-height:1.75;color:#5C5870">{{goals1}}</p>
+      <p data-rv="up" data-rvd=".12s" style="margin:16px 0 0;font-size:17px;line-height:1.75;color:#5C5870">{{goals2}}</p>
+    </div>
+  </div>
+</section>
+
+<sc-if value="{{hasPre}}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Case Study" style="padding:clamp(70px,9vw,110px) 0 0">
+  <div style="width:min(1140px,92vw);margin:0 auto;display:flex;flex-direction:column;gap:clamp(60px,8vw,96px)">
+    <sc-for list="{{preSections}}" as="s" hint-placeholder-count="1">
+      <div data-screen-label="{{s.t}}">
+        <div style="display:flex;align-items:baseline;gap:18px">
+          <span style="font-family:'Space Mono',monospace;font-weight:700;font-size:15px;color:{{accent}}">{{s.no}}</span>
+          <h3 data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,3.2vw,38px);letter-spacing:-0.02em">{{s.t}}</h3>
+        </div>
+        <p data-rv="up" data-rvd=".06s" style="margin:14px 0 0;max-width:66ch;font-size:16.5px;line-height:1.7;color:#5C5870">{{s.p}}</p>
+        <sc-if value="{{s.hasStats}}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:28px">
+            <sc-for list="{{s.stats}}" as="st" hint-placeholder-count="2">
+              <div data-rv="pop" style="flex:1 1 200px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.14);border-radius:22px;padding:24px 26px;box-shadow:4px 6px 0 rgba(23,21,34,.07)">
+                <div data-num data-target="{{st.v}}" data-dec="{{st.dec}}" data-suffix="{{st.suf}}" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(30px,3.4vw,44px);letter-spacing:-.03em;color:{{accent}}">{{st.init}}</div>
+                <div style="margin-top:8px;font-size:14.5px;font-weight:500;line-height:1.4;color:#5C5870">{{st.label}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{s.hasImgs}}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:{{s.grid}};gap:18px;margin-top:28px">
+            <sc-for list="{{s.imgs}}" as="im" hint-placeholder-count="1">
+              <div data-rv="up" data-csimg style="border:1.5px solid rgba(23,21,34,.12);border-radius:24px;overflow:hidden;background:#FFFDF8;transition:border-color .3s ease,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="border-color:{{accent}};transform:translateY(-6px);box-shadow:0 22px 50px rgba(23,21,34,.1)">
+                <sc-if value="{{im.useImg}}" hint-placeholder-val="{{ false }}">{{im.el}}</sc-if>
+                <sc-if value="{{im.useSlot}}" hint-placeholder-val="{{ true }}"><image-slot id="{{im.id}}" shape="rect" placeholder="{{im.ph}}" style="display:block;width:100%;aspect-ratio:{{im.r}}"></image-slot></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{hasProc}}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Design Process" style="padding:clamp(70px,9vw,110px) 0 0">
+  <div style="width:min(1140px,92vw);margin:0 auto">
+    <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;color:{{accent}};font-weight:700">✦ THE PROCESS</div>
+    <h2 data-rv="up" style="margin:14px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,4vw,46px);line-height:1.1;letter-spacing:-0.025em">Design <em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:{{accent}}">Process</em></h2>
+    <p data-rv="up" data-rvd=".06s" style="margin:16px 0 0;max-width:64ch;font-size:16.5px;line-height:1.7;color:#5C5870">A step-by-step walkthrough of how research was translated into a validated design — tap through each stage, or click any artifact to view it full screen.</p>
+
+    <div style="margin-top:32px;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch">
+      <div style="display:flex;gap:10px;padding-bottom:6px;width:max-content">
+        <sc-for list="{{procTabs}}" as="tb" hint-placeholder-count="4">
+          <button type="button" data-hov onClick="{{ tb.onClick }}" style="{{ tb.style }}"><span style="font-family:'Space Mono',monospace;font-size:11px;opacity:.7">{{tb.no}}</span><span>{{tb.label}}</span></button>
+        </sc-for>
+      </div>
+    </div>
+
+    <div ref="{{ panelRef }}" style="margin-top:24px;border:1.5px solid rgba(23,21,34,.12);border-radius:28px;background:#FFFDF8;padding:clamp(22px,3.5vw,40px);position:relative;overflow:hidden">
+      <span aria-hidden="true" style="position:absolute;top:clamp(16px,3vw,28px);right:clamp(20px,3.5vw,36px);font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(40px,6vw,80px);color:{{softNum}};letter-spacing:-.05em;pointer-events:none;line-height:1">{{activeNo}}</span>
+      <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(24px,3vw,34px);letter-spacing:-0.02em;max-width:78%">{{activeTitle}}</h3>
+      <p style="margin:12px 0 0;max-width:66ch;font-size:16px;line-height:1.7;color:#5C5870">{{activeDesc}}</p>
+      <div style="display:grid;grid-template-columns:{{activeGrid}};gap:16px;margin-top:24px">
+        <sc-for list="{{activePanelImgs}}" as="im" hint-placeholder-count="1">
+          <div style="position:relative;background:{{panelImgBg}};border:1px solid rgba(23,21,34,.08);border-radius:16px;padding:14px;display:flex;align-items:center;justify-content:center;min-height:200px">
+            {{im.el}}
+            <span aria-hidden="true" style="position:absolute;bottom:10px;right:12px;font-size:11px;font-weight:600;color:#fff;background:rgba(23,21,34,.66);padding:4px 10px;border-radius:999px;pointer-events:none">⤢ Klik untuk perbesar</span>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:16px;margin-top:26px;flex-wrap:wrap">
+        <div style="font-family:'Space Mono',monospace;font-size:13px;color:#5C5870">{{activeCount}}</div>
+        <div style="display:flex;gap:10px">
+          <button type="button" data-hov onClick="{{ prevStep }}" style="{{ prevStyle }}">← Prev</button>
+          <button type="button" data-hov onClick="{{ nextStep }}" style="{{ nextStyle }}">Next →</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<sc-if value="{{hasPost}}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Case Study" style="padding:clamp(70px,9vw,110px) 0 0">
+  <div style="width:min(1140px,92vw);margin:0 auto;display:flex;flex-direction:column;gap:clamp(60px,8vw,96px)">
+    <sc-for list="{{postSections}}" as="s" hint-placeholder-count="1">
+      <div data-screen-label="{{s.t}}">
+        <div style="display:flex;align-items:baseline;gap:18px">
+          <span style="font-family:'Space Mono',monospace;font-weight:700;font-size:15px;color:{{accent}}">{{s.no}}</span>
+          <h3 data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(26px,3.2vw,38px);letter-spacing:-0.02em">{{s.t}}</h3>
+        </div>
+        <p data-rv="up" data-rvd=".06s" style="margin:14px 0 0;max-width:66ch;font-size:16.5px;line-height:1.7;color:#5C5870">{{s.p}}</p>
+        <sc-if value="{{s.hasStats}}" hint-placeholder-val="{{ false }}">
+          <div style="display:flex;flex-wrap:wrap;gap:16px;margin-top:28px">
+            <sc-for list="{{s.stats}}" as="st" hint-placeholder-count="2">
+              <div data-rv="pop" style="flex:1 1 200px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.14);border-radius:22px;padding:24px 26px;box-shadow:4px 6px 0 rgba(23,21,34,.07)">
+                <div data-num data-target="{{st.v}}" data-dec="{{st.dec}}" data-suffix="{{st.suf}}" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(30px,3.4vw,44px);letter-spacing:-.03em;color:{{accent}}">{{st.init}}</div>
+                <div style="margin-top:8px;font-size:14.5px;font-weight:500;line-height:1.4;color:#5C5870">{{st.label}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+        <sc-if value="{{s.hasImgs}}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;grid-template-columns:{{s.grid}};gap:18px;margin-top:28px">
+            <sc-for list="{{s.imgs}}" as="im" hint-placeholder-count="1">
+              <div data-rv="up" data-csimg style="border:1.5px solid rgba(23,21,34,.12);border-radius:24px;overflow:hidden;background:#FFFDF8;transition:border-color .3s ease,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="border-color:{{accent}};transform:translateY(-6px);box-shadow:0 22px 50px rgba(23,21,34,.1)">
+                <sc-if value="{{im.useImg}}" hint-placeholder-val="{{ false }}">{{im.el}}</sc-if>
+                <sc-if value="{{im.useSlot}}" hint-placeholder-val="{{ true }}"><image-slot id="{{im.id}}" shape="rect" placeholder="{{im.ph}}" style="display:block;width:100%;aspect-ratio:{{im.r}}"></image-slot></sc-if>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
+      </div>
+    </sc-for>
+  </div>
+</section>
+</sc-if>
+
+<section data-screen-label="Reflection Quote" style="padding:clamp(80px,10vw,130px) 0">
+  <div style="width:min(760px,92vw);margin:0 auto;text-align:center">
+    <div data-rv="pop" style="display:inline-flex;gap:8px;align-items:center"><span style="width:10px;height:10px;border-radius:50%;background:{{accent}};display:inline-block"></span><span style="width:7px;height:7px;border-radius:50%;background:{{accent}};opacity:.55;display:inline-block"></span><span style="width:4px;height:4px;border-radius:50%;background:{{accent}};opacity:.3;display:inline-block"></span></div>
+    <p data-rv="up" data-rvd=".08s" style="margin:26px 0 0;font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;font-size:clamp(26px,3.6vw,40px);line-height:1.4;letter-spacing:-0.01em">“{{quote}}”</p>
+    <div data-rv="up" data-rvd=".16s" style="margin-top:24px;font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.14em;color:#5C5870">— RAIHANA SAKHI ASWANDA</div>
+  </div>
+</section>
+
+<sc-if value="{{closingFullOn}}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Impact Card" style="padding:0 0 clamp(70px,9vw,110px)">
+  <div style="width:min(1140px,92vw);margin:0 auto">
+    <div data-rv="up" data-csimg style="border:2px solid #171522;border-radius:34px;overflow:hidden;background:{{soft}};transition:border-color .3s ease,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="border-color:{{accent}};transform:translateY(-6px);box-shadow:0 24px 56px rgba(23,21,34,.14)">
+      {{closingFullEl}}
+    </div>
+  </div>
+</section>
+</sc-if>
+<sc-if value="{{closingCardOn}}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Impact Card" style="padding:0 0 clamp(70px,9vw,110px)">
+  <div style="width:min(1140px,92vw);margin:0 auto">
+    <div data-rv="up" data-anim style="position:relative;overflow:hidden;border:2px solid #171522;border-radius:34px;padding:clamp(30px,4.5vw,56px);background:linear-gradient(120deg,{{deep}},{{accent}},{{deep}});background-size:300% 100%;animation:gradShift 16s linear infinite;color:{{onAccent}}">
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(380px,100%),1fr));gap:clamp(30px,4vw,56px);align-items:center">
+        <div>
+          <h2 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,3.8vw,44px);line-height:1.12;letter-spacing:-0.02em">{{closingTitle}}</h2>
+          <sc-if value="{{hasClosingIntro}}" hint-placeholder-val="{{ false }}">
+            <p style="margin:18px 0 0;font-size:16px;line-height:1.65;opacity:.9;max-width:52ch">{{closingIntro}}</p>
+          </sc-if>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:30px">
+            <sc-for list="{{closingPoints}}" as="pt" hint-placeholder-count="3">
+              <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:16px 18px;backdrop-filter:blur(4px)">
+                <div style="font-weight:700;font-size:15.5px;font-family:'Space Grotesk',sans-serif">{{pt.t}}</div>
+                <div style="margin-top:6px;font-size:13.5px;line-height:1.5;opacity:.85">{{pt.d}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <sc-if value="{{closingImgOn}}" hint-placeholder-val="{{ false }}">
+          <div data-anim style="animation:floatP 7s ease-in-out infinite alternate">{{closingCompanionEl}}</div>
+        </sc-if>
+        <sc-if value="{{closingSlotOn}}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;justify-content:center">
+          <div data-anim style="width:clamp(150px,16vw,190px);animation:floatP 6s ease-in-out infinite alternate">
+            <div style="transform:rotate(4deg)">
+              <div style="position:relative;border:7px solid #1A1825;border-radius:30px;overflow:hidden;background:#fff;box-shadow:0 34px 64px rgba(23,21,34,.35)">
+                <div style="position:relative;aspect-ratio:9/19;background:#fff"><image-slot id="{{coverSlot}}" shape="rect" placeholder="Final screen" style="position:absolute;inset:0;width:100%;height:100%;display:block"></image-slot></div>
+                <div style="position:absolute;top:8px;left:50%;transform:translateX(-50%);width:42%;height:11px;background:#1A1825;border-radius:999px"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        </sc-if>
+      </div>
+    </div>
+  </div>
+</section>
+</sc-if>
+
+<section data-screen-label="Related Projects" style="padding:0 0 clamp(90px,11vw,130px)">
+  <div style="width:min(1140px,92vw);margin:0 auto">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap">
+      <h2 data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,3.8vw,44px);letter-spacing:-0.025em">Related <em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:{{accent}}">Projects</em></h2>
+      <a href="Portfolio.dc.html#project" style="display:inline-flex;align-items:center;gap:8px;color:#171522;text-decoration:none;font-weight:600;font-size:15px;border-bottom:2px solid {{accent}};padding-bottom:2px;transition:gap .3s cubic-bezier(.22,1,.36,1)" style-hover="gap:14px">See All Projects<span>→</span></a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:22px;margin-top:34px">
+      <sc-for list="{{related}}" as="r" hint-placeholder-count="2">
+        <a data-rel href="{{r.href}}" data-rv="up" style="display:block;text-decoration:none;color:#171522;border:1.5px solid rgba(23,21,34,.12);border-radius:28px;overflow:hidden;background:#FFFDF8;transition:border-color .3s ease,transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="border-color:{{r.accent}};transform:translateY(-6px);box-shadow:0 22px 50px rgba(23,21,34,.1)">
+          <div style="background:{{r.soft}};display:flex;align-items:flex-end;justify-content:center;padding:26px 24px 0;overflow:hidden;min-height:210px">
+            <div data-relmock style="display:flex;align-items:flex-end;justify-content:center;transition:transform .45s cubic-bezier(.22,1,.36,1);transform-origin:bottom center">
+              {{r.mockEl}}
+            </div>
+          </div>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:14px;padding:20px 24px">
+            <div>
+              <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:20px">{{r.title}}</div>
+              <div style="margin-top:4px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.14em;color:#8B87A0">{{r.cat}}</div>
+            </div>
+            <span data-relarrow style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;border:1.5px solid #171522;background:{{r.soft}};font-size:17px;transition:transform .35s cubic-bezier(.22,1,.36,1)">→</span>
+          </div>
+        </a>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+<section id="contact" data-screen-label="Contact CTA" style="scroll-margin-top:90px;position:relative;background:#0F0E17;border-radius:clamp(28px,4vw,48px) clamp(28px,4vw,48px) 0 0;padding:clamp(90px,12vw,150px) 0 0;overflow:hidden">
+  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(800px 400px at 50% 0%,rgba(91,61,245,.22),transparent 70%)"></div>
+  <div data-rv="up" style="position:relative;width:min(860px,92vw);margin:0 auto;text-align:center">
+    <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.24em;color:#C6F24E">✳ AVAILABLE FOR INTERNSHIPS, PROJECTS, AND COLLABORATIONS</div>
+    <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(40px,6.4vw,80px);line-height:1.08;letter-spacing:-0.03em">
+      <span data-anim style="background:linear-gradient(90deg,#A78BFA,#FF6B5B,#FFC94D,#A78BFA);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:gradShift 9s linear infinite;display:inline-block;padding-bottom:.08em">Let's build something<br><em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400">thoughtful</em> together.</span>
+    </h2>
+    <p style="margin:24px auto 0;max-width:620px;font-size:16.5px;line-height:1.7;color:#A5A1B8">I'm open to UI/UX, front-end development, data analytics, and community-driven digital projects. If you have an idea, role, or collaboration in mind, I'd love to hear the story behind it.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:40px">
+      <a data-mag href="mailto:hello@raihanasakhi.com" style="display:inline-block;background:#5B3DF5;color:#FFFDF8;padding:15px 32px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;transition:box-shadow .3s ease" style-hover="box-shadow:0 0 40px rgba(91,61,245,.6)">Email me</a>
+      <a data-mag href="https://www.linkedin.com" target="_blank" rel="noopener" style="display:inline-block;background:transparent;color:#FFFDF8;border:1.5px solid rgba(255,255,255,.3);padding:13.5px 32px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;transition:box-shadow .3s ease,border-color .3s ease" style-hover="box-shadow:0 0 30px rgba(255,255,255,.18);border-color:rgba(255,255,255,.7)">LinkedIn</a>
+      <button data-mag type="button" style="display:inline-block;background:#C6F24E;color:#171522;border:none;font-family:inherit;padding:15px 32px;border-radius:999px;font-weight:600;font-size:16px;transition:box-shadow .3s ease" style-hover="box-shadow:0 0 40px rgba(198,242,78,.5)">Download CV</button>
+    </div>
+  </div>
+  <footer data-screen-label="Footer" style="position:relative;margin-top:clamp(70px,9vw,110px);border-top:1px solid rgba(255,255,255,.12)">
+    <div style="width:min(1140px,92vw);margin:0 auto;padding:26px 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px">
+      <div style="font-size:14px;color:#8B87A0">© 2026 Raihana Sakhi. Designed and built with care.</div>
+      <div style="display:flex;gap:22px">
+        <a href="Portfolio.dc.html#project" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">Portfolio</a>
+        <a href="Portfolio.dc.html#about" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">About Me</a>
+        <a href="#top" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+</section>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;cursorFx&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+class Component extends DCLogic {
+  constructor(props) {
+    super(props);
+    const DATA = {
+      ternovia: {
+        key: 'ternovia', title: 'Ternovia', kicker: 'UI/UX CASE STUDY • FINAL PROJECT',
+        subtitle: 'Designing a livestock management platform that streamlines administration, monitoring, and communication between farmers, field officers, and government agencies.',
+        accent: '#8C5A3C', deep: '#5E3A24', soft: '#F3E7DD', on: '#FFF8F2',
+        glow: 'rgba(140,90,60,.30)', glowSoft: 'rgba(140,90,60,.14)',
+        heroType: 'img', heroImg: 'uploads/ternovia-hero-mockup-4dd9c5a2.png',
+        procGroup: ['Empathy Map', 'User Persona', 'User Journey Map', 'Pain n Gain Point', 'Information Architecture', 'User Flow', 'Wireframe', 'Design System'],
+        bannerImg: 'uploads/ternovia-overview-banner.png',
+        closingFullImg: 'uploads/ternovia-closing.png', cover: 'ternovia-mobile',
+        ptype: 'Final Project', category: 'UI UX Design, UX Research, Product Design', role: 'UI UX Designer, UX Researcher',
+        client: 'Dinas Peternakan Kabupaten Jombang',
+        preview: 'https://www.figma.com/proto/y36IgqJECuQCFz58LWlqLN/TERNOVIA---Skripsi-FINAL?node-id=6252-35662&p=f&t=s7zxozToZ0fC5iB4-1&scaling=scale-down&content-scaling=fixed&page-id=5003%3A8466&starting-point-node-id=6252%3A35662&show-proto-sidebar=1',
+        introHead: 'Transforming livestock administration through digital innovation.',
+        intro: ['Ternovia is a livestock management platform designed to address challenges in administrative processes, livestock monitoring, and stakeholder communication. The project was initiated after identifying several issues faced by farmer groups, field officers, and government agencies, including manual record keeping, fragmented communication channels, and inefficient reporting workflows.', 'Using the Double Diamond framework, I conducted user research, stakeholder interviews, requirement analysis, and usability evaluations to understand user needs and translate them into practical digital solutions.'],
+        goalsHead: 'Designing a user centered solution to simplify livestock administration and stakeholder collaboration.',
+        goals: ['The goal of Ternovia was to streamline livestock administration, monitoring, and communication processes through a centralized digital platform. The project aimed to address challenges such as manual record keeping, fragmented communication channels, and inefficient reporting workflows experienced by farmers, field officers, and government agencies.', 'Following the Double Diamond framework, the design process began with user research and stakeholder interviews to identify key pain points and operational needs. These insights were translated into user personas, user journeys, information architecture, wireframes, and high fidelity prototypes. The final solution combines livestock data services, facility information, and streamlined interactions to deliver an accessible and user friendly experience.'],
+        sections: [
+          { t: 'User Research', p: 'Conducted interviews and discussions with farmers, field officers, and government representatives to identify operational challenges and opportunities for digital transformation.', stats: [{ v: 10, dec: 0, suf: '+', label: 'Stakeholder Interview — with farmers, field officers, and government representatives to understand livestock administration challenges.' }, { v: 25, dec: 0, suf: '+', label: 'Pain Point Identified across the current administrative and monitoring workflow.' }], cols: 1 },
+          { t: 'Empathy Map', p: "An empathy map was created to better understand users' thoughts, feelings, behaviors, and challenges throughout livestock administration and monitoring activities. This process helped uncover key pain points and expectations from different stakeholder groups, providing a foundation for designing solutions that align with real user needs.", imgs: [{ src: 'uploads/ternovia-empathy-map.png', ph: 'Empathy map' }], cols: 1 },
+          { t: 'User Persona', p: 'User personas were developed based on research findings to represent the characteristics, goals, motivations, and challenges of the primary user groups. These personas guided design decisions and ensured that the solution addressed the needs of farmers, field officers, and government representatives.', imgs: [{ src: 'uploads/ternovia-persona.png', ph: 'User persona' }], cols: 1 },
+          { t: 'User Journey Map', p: 'A user journey map was created to visualize the end to end experience of users when completing administrative and monitoring tasks. Mapping the journey helped identify pain points, inefficiencies, and opportunities for improving workflows through digital solutions.', imgs: [{ src: 'uploads/ternovia-journey-map.png', ph: 'User journey map' }], cols: 1 },
+          { t: 'Pain n Gain Point', p: 'Based on the research insights, several Pain n Gain points were formulated to transform identified challenges into design opportunities. These questions served as a guide for generating user centered solutions throughout the ideation process.', imgs: [{ src: 'uploads/ternovia-pain-gain.png', ph: 'Pain and gain point' }], cols: 1 },
+          { t: 'Information Architecture', p: 'An information architecture was structured to organize features and content based on user roles and priorities. This structure ensured that farmers, field officers, and government officers could navigate the platform intuitively according to their responsibilities.', imgs: [{ src: 'uploads/ternovia-information-architecture.png', ph: 'Information architecture' }], cols: 1 },
+          { t: 'User Flow', p: 'User flows were designed to define the interaction paths and task completion processes for each user role. This helped ensure that the application structure remained intuitive, efficient, and aligned with user expectations.', imgs: [{ src: 'uploads/ternovia-user-flow.png', ph: 'User flow' }], cols: 1 },
+          { t: 'Wireframe', p: 'Low fidelity wireframes were created to explore layout structures, content hierarchy, and feature placement before moving into visual design. This stage allowed rapid iteration and validation of key workflows.', imgs: [{ src: 'uploads/ternovia-wireframe.png', ph: 'Wireframe' }], cols: 1 },
+          { t: 'Design System', p: 'A design system was established to maintain visual consistency and improve scalability across the application. It includes brand identity, typography, color palettes, iconography, and reusable interface components.', imgs: [{ src: 'uploads/ternovia-design-system.png', ph: 'Design system' }], cols: 1 },
+          { t: 'High Fidelity Prototype', p: 'The final interface was designed based on validated user needs and usability principles. The high fidelity prototype demonstrates how Ternovia simplifies livestock administration, monitoring, and stakeholder communication through an accessible and user friendly experience.', imgs: [{ src: 'uploads/ternovia-hifi.png', ph: 'High fidelity prototype' }], cols: 1 },
+        ],
+        quote: 'Identified major usability challenges in livestock administration and translated research insights into a scalable digital platform that supports farmers, field officers, and government stakeholders.',
+        closingIntro: 'Ternovia helps stakeholders manage livestock information more efficiently, improve communication, and make better decisions through centralized data management.',
+        closing: { t: 'Driving Digital Transformation in Livestock Management', points: [{ t: 'Faster Administration', d: 'Digitizing livestock records reduces time spent on manual documentation and reporting.' }, { t: 'Better Data Accuracy', d: 'Centralized information minimizes data duplication and reporting errors.' }, { t: 'Data-Driven Decisions', d: 'Real-time insights support faster and more informed decision-making.' }, { t: 'Operational Efficiency', d: 'Simplified workflows allow stakeholders to focus on livestock development and monitoring activities.' }] },
+        banner: false, related: ['tspace', 'dentalrave'],
+      },
+      tspace: {
+        key: 'tspace', title: 'T-Space', kicker: 'UI/UX CASE STUDY • INTERNSHIP PROJECT',
+        subtitle: 'Designing a location based platform that helps users discover and access public facilities more efficiently.',
+        accent: '#F5BC00', deep: '#171522', soft: '#FFF3C7', on: '#171522',
+        glow: 'rgba(255,196,0,.35)', glowSoft: 'rgba(255,196,0,.16)',
+        heroType: 'img', heroImg: 'uploads/tspace-hero-mockup-1eb3899c.png',
+        preview: 'https://www.figma.com/proto/JrUxyYMgw2XvbLHW31IAL0/T-Space-Gadis?node-id=224-1702&p=f&t=v7G9LSOoJdQ9EGab-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=224%3A1702&show-proto-sidebar=1',
+        procGroup: ['Problem', 'Why Now?', 'Business Opportunity'],
+        bannerImg: 'uploads/tspace-overview-banner.png',
+        closingFullImg: 'uploads/tspace-closing.png', cover: 'tspace-mobile',
+        ptype: 'Internship Project', category: 'UI UX Design, Business Analysis, Mobile Development', role: 'Business Analyst, UI UX Designer, Front End Developer',
+        introHead: 'Designing a smarter way to discover public facilities.',
+        intro: ['T Space is a location based mobile application designed to help users discover and access nearby public facilities such as restrooms, smoking rooms, storage lockers, and waste disposal points. The project was developed to address the challenges users face when locating essential facilities in unfamiliar environments.', 'As a Business Analyst, UI UX Designer, and Front End Developer, I contributed to requirement gathering, user experience design, prototyping, and Flutter based mobile development. The goal was to create a seamless experience that enables users to easily find facilities, access relevant information, and navigate efficiently through a centralized platform.'],
+        goalsHead: 'Creating a user centered platform that improves accessibility, convenience, and navigation.',
+        goals: ['The primary goal of T Space was to improve how users discover and access public facilities through a centralized digital platform. The project focused on simplifying facility search processes while providing accurate location information and intuitive navigation.', 'The design process included understanding user needs, analyzing existing challenges, creating user flows, wireframes, and interactive prototypes, followed by usability evaluation and iterative improvements. The final solution combines location based services, facility information, and streamlined interactions to deliver a more efficient user experience.'],
+        sections: [
+          { t: 'Problem', p: 'Through market observation and problem analysis, several challenges were identified regarding access to public facilities. Users often experience difficulty locating clean restrooms, affordable temporary storage, quiet workspaces, and short term resting facilities, particularly in unfamiliar or crowded environments.', imgs: [{ src: 'uploads/tspace-problem.jpg', ph: 'Problem' }], cols: 1 },
+          { t: 'Why Now?', p: 'Market research highlighted increasing opportunities for location based service platforms driven by smartphone adoption, changing work patterns, growing urban mobility, and rising demand for flexible public facilities. These trends validated the need for a centralized solution that improves accessibility and convenience.', imgs: [{ src: 'uploads/tspace-why-now.jpg', ph: 'Why now' }], cols: 1 },
+          { t: 'Business Opportunity', p: 'T Space was designed not only to solve user problems but also to support a sustainable business model. Revenue opportunities were identified through service booking fees, facility partnerships, and location based service transactions, creating value for both users and service providers.', imgs: [{ src: 'uploads/tspace-market-revenue.jpg', ph: 'Market and revenue' }], cols: 1 },
+          { t: 'Mockup Section', p: 'The final design delivers a seamless experience that enables users to discover nearby facilities, access service information, make reservations, and navigate efficiently through a location based mobile platform.', imgs: [{ src: 'uploads/tspace-hifi-grid.png', ph: 'High fidelity mockups' }, { src: 'uploads/tspace-mockup-slide.jpg', ph: 'Mockup overview' }], cols: 1 },
+        ],
+        quote: 'This project strengthened my understanding of how business analysis, user experience design, and software development work together to create meaningful digital products. By participating in the entire product lifecycle, I gained valuable experience in balancing user needs, business goals, and technical implementation.',
+        closing: { t: 'Transforming Public Space Accessibility', points: [{ t: 'Faster Service Discovery', d: 'Users can find nearby facilities in seconds without manually searching multiple locations.' }, { t: 'Seamless User Experience', d: 'A simplified booking flow reduces friction and improves overall accessibility.' }, { t: 'Efficient Space Utilization', d: 'Duration-based payment ensures users only pay for what they actually use.' }] },
+        banner: false, related: ['dentalrave', 'eventu'],
+      },
+      dentalrave: {
+        key: 'dentalrave', title: 'DentalRave', kicker: 'UI/UX CASE STUDY • ACADEMIC PROJECT',
+        subtitle: 'Creating a user centered dental care platform that simplifies dental discovery, appointment booking, and patient feedback in one seamless experience.',
+        accent: '#2BB89C', deep: '#0E4A3E', soft: '#DDF6F0', on: '#F2FFFB',
+        glow: 'rgba(62,207,178,.32)', glowSoft: 'rgba(62,207,178,.15)',
+        heroType: 'img', heroImg: 'uploads/dentalrave-hero-mockup-8907ee1f.png',
+        preview: 'https://www.figma.com/proto/jQNYselg8mwrxUhTDDko9t/DentalRave?node-id=21-2442&p=f&t=YaKuUdbM6QzoRhjR-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=19%3A809',
+        procGroup: ['Pain Points', 'User Persona', 'User Flow', 'Storyboard', 'Wireframe', 'Design System'],
+        bannerImg: 'uploads/dentalrave-overview-banner.png',
+        closingFullImg: 'uploads/dentalrave-closing.png', cover: 'dentalrave-a',
+        ptype: 'Academic Project', category: 'UI UX Design, User Research, Mobile App', role: 'UX Research, Wireframing, Prototyping',
+        introHead: 'Creating a more transparent dental care experience.',
+        intro: ['DentalRave is a user centered dental care platform designed to simplify how people discover trusted dentists, book appointments, and share feedback after consultations. The project was initiated to address the lack of transparent information and reliable reviews when choosing dental care services.', 'As the UX Designer, I was responsible for conducting user research, defining user needs, designing wireframes and prototypes, and validating the final solution through usability testing. The goal was to create an intuitive experience that reduces friction in accessing quality dental care.'],
+        goalsHead: 'Reducing friction in accessing quality dental care through research and validation.',
+        goals: ['The project centered on transparency — giving patients reliable information, clear reviews, and a straightforward way to communicate their needs before booking a dentist.', 'Following a research-led process, insights were translated into a persona, user flows, storyboards, wireframes, and a high fidelity design, each validated before moving forward, resulting in a friendly and trustworthy dental care experience.'],
+        sections: [
+          { t: 'Problem Statement', p: 'Many people struggle to choose the right dentist because reliable information is often scattered across multiple platforms. Patients find it difficult to compare dentists, understand service quality, and trustworthy reviews, or communicate their treatment needs before making an appointment. Without a centralized platform, the entire process becomes time consuming, uncertain, and frustrating, leading to hesitance in making healthcare decisions.', cols: 1 },
+          { t: 'User Research', p: 'User research was conducted through interviews and surveys involving university students and young professionals who actively seek dental care services. The study explored how users currently search for dentists, evaluate healthcare providers, and schedule appointments.', cols: 1 },
+          { t: 'Pain Points', p: 'The research identified four recurring challenges experienced by users throughout their dental care journey: difficulty finding reliable and quality dentists due to limited transparent information, inconvenience in creating and managing online appointments, lack of platforms that support clear communication of dental needs, and the absence of a space to share personal experiences and reviews.', imgs: [{ src: 'uploads/dentalrave-pain-points.jpg', ph: 'Pain points' }], cols: 1 },
+          { t: 'User Persona', p: 'Based on the research findings, a primary persona was developed to represent young adults who prioritize dental health but face barriers in finding reliable healthcare providers. The persona highlights user goals, frustrations, behaviors, and motivations to ensure every design decision remained aligned with real user needs rather than assumptions.', imgs: [{ src: 'uploads/dentalrave-persona.jpg', ph: 'User persona' }], cols: 1 },
+          { t: 'User Flow', p: 'User flows were created to visualize the complete interaction from onboarding to appointment confirmation. The flow covers user registration, searching for dentists, reviewing profiles, selecting appointment schedules, completing payment, and providing feedback after consultations. This helped validate navigation logic before moving into wireframe design.', imgs: [{ src: 'uploads/dentalrave-user-flow.jpg', ph: 'User flow' }], cols: 1 },
+          { t: 'Storyboard', p: 'A storyboard was developed to illustrate the user scenario in context, showing how the persona discovers DentalRave, selects a trusted dentist based on reviews, books an appointment, and shares feedback after the consultation.', imgs: [{ src: 'uploads/dentalrave-storyboard-bigpicture.jpg', ph: 'Storyboard — big picture' }, { src: 'uploads/dentalrave-storyboard-closeup.jpg', ph: 'Storyboard — close up' }], cols: 1 },
+          { t: 'Wireframe', p: 'Low fidelity wireframes were first explored on paper to quickly test screen layouts, information hierarchy, and navigation, then translated into digital wireframes to validate structure and interaction patterns before visual design.', imgs: [{ src: 'uploads/dentalrave-wireframe-paper.jpg', ph: 'Paper wireframe' }, { src: 'uploads/dentalrave-wireframe-digital.jpg', ph: 'Digital wireframe' }], cols: 1 },
+          { t: 'Design System', p: 'A design system was established to maintain consistency throughout the application. It includes typography, color palette, navigation components, reusable cards, buttons, and interface elements, enabling efficient iteration and a cohesive visual identity.', imgs: [{ src: 'uploads/dentalrave-design-system.jpg', ph: 'Design system' }], cols: 1 },
+          { t: 'High Fidelity Design', p: 'The final interface transforms the validated wireframes into a modern, friendly, and trustworthy visual experience. The design emphasizes clarity in dentist information such as experience, ratings, reviews, and appointment availability, supporting users in making confident healthcare decisions.', imgs: [{ src: 'uploads/dentalrave-mockup-transform.jpg', ph: 'Wireframe to visual transformation' }, { src: 'uploads/dentalrave-hifi-grid.png', ph: 'High fidelity screens' }], cols: 1 },
+        ],
+        quote: 'This project deepened my ability to turn scattered, uncertain user journeys into a transparent, trustworthy experience — validating every design decision through research and usability testing.',
+        closing: { t: 'Transforming Dental Clinic Management', points: [{ t: 'Efficient Appointment Management', d: 'Patients can easily schedule appointments online, reducing manual booking processes and minimizing scheduling conflicts.' }, { t: 'Centralized Patient Records', d: 'Digital medical records enable dentists and staff to securely access patient histories, treatment plans, and clinical documentation in one place.' }, { t: 'Streamlined Clinic Operations', d: 'Integrated operational features improve staff productivity, reduce paperwork, and support more efficient dental services.' }] },
+        banner: false, related: ['eventu', 'ternovia'],
+      },
+      eventu: {
+        key: 'eventu', title: 'EventU', kicker: 'UI/UX CASE STUDY • DESIGN COMPETITION',
+        subtitle: 'Designing a centralized platform that helps university students discover, organize, and participate in academic and non-academic events.',
+        accent: '#3B82F6', deep: '#1D4ED8', soft: '#DBEAFE', on: '#F4F8FF',
+        glow: 'rgba(59,130,246,.32)', glowSoft: 'rgba(59,130,246,.15)',
+        heroType: 'img', heroImg: 'uploads/eventu-hero-mockup-fd49f705.png',
+        preview: 'https://www.figma.com/proto/5xhpATlohVXOkkDxBO5gKX/Rancangan-Aplikasi-EventU?node-id=163-5530&t=qmSkvF5O0rCdN912-1&scaling=scale-down&content-scaling=fixed&page-id=0%3A1&starting-point-node-id=567%3A10980&show-proto-sidebar=1', noOverview: true,
+        procGroup: ['Empathy Map', 'Point of View (POV)', 'How Might We', 'Ideation', 'Wireframe', 'Design System'],
+        closingFullImg: 'uploads/eventu-closing.png', cover: 'eventu-a',
+        ptype: 'UI/UX Design Competition', category: 'UI UX Design, User Research, Mobile App', role: 'UX Research, UI UX Designer, Product Strategy',
+        introHead: 'Transforming user insights into an intuitive event discovery experience through a structured UX design process.',
+        intro: ['EventU is a centralized mobile platform designed to help university students discover, organize, and participate in academic and non-academic events. The project was developed for a UI/UX design competition using the Design Thinking framework, from empathize and define through ideation, prototyping, and testing.', 'The design process began by translating research findings into a clear product structure that prioritizes usability and discoverability. Each interface was carefully refined using a consistent design system, transforming scattered event information into an interactive high fidelity prototype that supports both event participants and organizers.'],
+        goalsHead: 'Helping students discover opportunities beyond the classroom.',
+        goals: ['The goal of EventU was to reduce the friction students face when searching for campus activities, competitions, and organizational events. Following the Design Thinking process (Overview, Empathize, Define, Ideate, Prototype, Testing), the team conducted interviews with active university students and student organization representatives to understand how they discover, promote, and manage events.', ''],
+        sections: [
+          { t: 'User Research', p: 'Background research revealed the urgency of the problem. Graduate unemployment in Indonesia rose from 3.5 million to 7.99 million in 2023 based on BPS data, while universities require students to collect a minimum of 100 student credit points (SKPM) from activities. Meanwhile, 80% of students report confusion when searching for activities, causing them to miss opportunities that support both their SKPM requirements and their CVs.', stats: [{ v: 7.99, dec: 2, suf: ' JT', label: 'Pengangguran sarjana di Indonesia 2023 (BPS)' }, { v: 100, dec: 0, suf: ' Poin', label: 'Minimal Satuan Kredit Poin Mahasiswa (SKPM)' }, { v: 80, dec: 0, suf: '%', label: 'Mahasiswa kebingungan mencari kegiatan' }], imgs: [{ src: 'uploads/eventu-research.png', ph: 'User research' }], cols: 1 },
+          { t: 'Empathy Map', p: 'Based on interview results, an empathy map was constructed to capture what students say, think, feel, and do when searching for and joining campus activities. The mapping surfaced recurring frustrations such as scattered event information, missed registration deadlines, lost certificates, and difficulty promoting events as organizers.', imgs: [{ src: 'uploads/eventu-empathy-map.png', ph: 'Empathy map' }], cols: 1 },
+          { t: 'Point of View (POV)', p: 'Insights gathered from the empathy map were translated into Point of View statements using the user + need + insight format. These statements focused on core student needs: finding relevant activities, tracking event timelines, storing certificates, saving event information, simplifying payment, and helping organizers reach participants effectively.', imgs: [{ src: 'uploads/eventu-pov.png', ph: 'Point of view' }], cols: 1 },
+          { t: 'How Might We', p: 'The How Might We framework was used to convert each POV statement into actionable design challenges, reframing user problems into opportunities that encouraged broader exploration before narrowing down to validated feature directions.', imgs: [{ src: 'uploads/eventu-hmw.png', ph: 'How might we' }], cols: 1 },
+          { t: 'Ideation', p: 'Brain writing sessions were conducted to generate feature ideas that addressed each design opportunity. Concepts such as personalized event filters, interactive calendars, deadline notifications, digital certificates, bookmarks and wishlists, integrated payment and ticketing, participant management, and organizer verification were evaluated before moving into the prototyping phase.', imgs: [{ src: 'uploads/eventu-brainwriting.png', ph: 'Brain writing' }], cols: 1 },
+          { t: 'Wireframe', p: 'Low fidelity wireframes were created to establish navigation patterns, screen hierarchy, and user flows before investing in visual design. This iterative process allowed rapid validation of layouts while maintaining a strong focus on usability and task completion.', imgs: [{ src: 'uploads/eventu-wireframe.png', ph: 'Wireframe' }], cols: 1 },
+          { t: 'Design System', p: 'A design system was created to maintain consistency across the application through standardized colors, typography, iconography, navigation components, and reusable UI elements, supporting efficient collaboration throughout the design process.', imgs: [{ src: 'uploads/eventu-design-system.png', ph: 'Design system' }], cols: 1 },
+          { t: 'High Fidelity Prototype', p: 'The final prototype transformed validated concepts into a polished mobile application covering event discovery, ticketing and digital certificates, participant management, and organizer verification, delivering a seamless experience for both students and event organizers.', imgs: [{ src: 'uploads/eventu-hifi-grid.png', ph: 'High fidelity prototype' }], cols: 1 },
+          { t: 'Usability Testing', p: 'The interactive prototype was evaluated through usability testing with representative users to validate navigation, task completion, and overall experience. Testing results coming soon.', cols: 1 },
+        ],
+        quote: 'A structured design thinking process turned scattered, hard-to-find campus event information into an intuitive experience — validated end to end from empathize through usability testing.',
+        closing: { t: 'Transforming Event Experiences', points: [{ t: 'Improved Event Accessibility', d: 'Users can easily discover relevant events through an intuitive interface, reducing the effort required to search across multiple platforms.' }, { t: 'Simplified Registration Process', d: 'A streamlined registration flow minimizes user friction, enabling faster sign-ups and a smoother onboarding experience.' }, { t: 'Enhanced Organizer Efficiency', d: 'Centralized participant management and event monitoring help organizers reduce administrative work and focus on delivering successful events.' }] },
+        banner: true, related: ['ternovia', 'tspace'],
+      },
+    };
+    this.DATA = DATA;
+    const q = new URLSearchParams(location.search).get('p');
+    this.proj = DATA[q] || DATA.ternovia;
+    this.state = { tab: 0, lb: -1 };
+    this.panelRef = React.createRef();
+    this._prevTab = 0;
+    this.openLb = (idx) => this.setState(s => ({ lb: idx, tab: (this._flat && this._flat[idx]) ? this._flat[idx].step : s.tab }));
+  }
+
+  renderVals() {
+    const p = this.proj, D = this.DATA;
+    const mkImg = (src, alt, style, zoom) => src ? React.createElement('img', Object.assign({ src, alt: alt || '', loading: 'lazy' }, zoom ? { 'data-zoom': '' } : {}, { style: Object.assign({ display: 'block', width: '100%', height: 'auto' }, zoom ? { cursor: 'zoom-in' } : {}, style || {}) })) : null;
+    const mkProcImg = (src, alt, idx) => src ? React.createElement('img', { src, alt: alt || '', loading: 'lazy', onClick: () => this.openLb(idx), style: { maxHeight: '65vh', maxWidth: '100%', width: 'auto', height: 'auto', objectFit: 'contain', display: 'block', margin: '0 auto', borderRadius: '8px', cursor: 'zoom-in' } }) : null;
+    const mapSec = (s, i) => ({
+      t: s.t, p: s.p, no: String(i + 1).padStart(2, '0') + ' /',
+      hasStats: !!s.stats, hasImgs: !!(s.imgs && s.imgs.length),
+      grid: 'repeat(' + (s.cols || 1) + ',1fr)',
+      stats: (s.stats || []).map(st => ({ ...st, init: (st.dec ? (0).toFixed(st.dec).replace('.', ',') : '0') + st.suf })),
+      imgs: (s.imgs || []).map(im => ({ ...im, useImg: !!im.src, useSlot: !im.src, src: im.src || '', id: im.id || '', r: im.r || '16/9', el: mkImg(im.src, im.ph, { borderRadius: '0' }, true) })),
+    });
+    const groupSet = new Set(p.procGroup || []);
+    const pre = [], post = [], proc = []; let seen = false;
+    p.sections.forEach((s, i) => {
+      if (groupSet.has(s.t)) { proc.push({ s: s, i: i }); seen = true; }
+      else if (!seen) pre.push(mapSec(s, i));
+      else post.push(mapSec(s, i));
+    });
+    const flat = [];
+    proc.forEach((o, si) => (o.s.imgs || []).forEach(im => flat.push({ src: im.src, alt: im.ph, step: si, stepTitle: o.s.t })));
+    this._flat = flat;
+    const tab = Math.max(0, Math.min(this.state.tab || 0, proc.length - 1));
+    const tabBase = 'display:inline-flex;align-items:center;gap:8px;white-space:nowrap;font-family:inherit;font-weight:600;font-size:14px;padding:10px 18px;border-radius:999px;cursor:pointer;transition:background .35s cubic-bezier(.34,1.56,.64,1),color .3s ease,border-color .3s ease;';
+    const procTabs = proc.map((o, si) => ({
+      label: o.s.t, no: String(si + 1).padStart(2, '0'),
+      onClick: () => this.setState({ tab: si }),
+      style: tabBase + (si === tab ? 'background:' + p.accent + ';color:' + p.on + ';border:1.5px solid #171522' : 'background:#FFFDF8;color:#171522;border:1.5px solid rgba(23,21,34,.16)'),
+    }));
+    const cur = proc[tab];
+    let baseIdx = 0; for (let k = 0; k < tab; k++) baseIdx += (proc[k].s.imgs || []).length;
+    const activePanelImgs = cur ? (cur.s.imgs || []).map((im, j) => ({ el: mkProcImg(im.src, im.ph, baseIdx + j) })) : [];
+    const navBtn = (en) => 'font-family:inherit;font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;border:1.5px solid #171522;background:' + (en ? '#171522' : 'transparent') + ';color:' + (en ? '#FAF7F0' : 'rgba(23,21,34,.35)') + ';cursor:' + (en ? 'pointer' : 'default') + ';opacity:' + (en ? '1' : '.5') + ';transition:background .3s ease';
+    const lb = this.state.lb, lbOpen = lb >= 0 && lb < flat.length;
+    return {
+      accent: p.accent, deep: p.deep, soft: p.soft, onAccent: p.on, glow: p.glow, glowSoft: p.glowSoft,
+      kicker: p.kicker, subtitle: p.subtitle,
+      titleWords: p.title.split(' ').map((t, i) => ({ t, d: (0.1 + i * 0.09).toFixed(2) + 's' })),
+      heroLaptop: p.heroType === 'lp', heroPhones: p.heroType === 'pp', heroImgOn: p.heroType === 'img', heroImgSrc: p.heroImg || '',
+      heroImgEl: mkImg(p.heroImg, p.title + ' mockup', { maxWidth: 'min(80%,760px)', filter: 'drop-shadow(0 40px 70px rgba(23,21,34,.2))' }, false),
+      dSlot: p.dSlot || '', pASlot: p.pASlot || '', pBSlot: p.pBSlot || '', coverSlot: p.cover, bannerSlot: p.key + '-banner',
+      bannerImgOn: !!p.bannerImg, bannerSlotOn: !p.bannerImg && !p.noOverview, bannerSrc: p.bannerImg || '',
+      overviewOn: !p.noOverview,
+      bannerEl: mkImg(p.bannerImg, 'Project overview', null, true),
+      closingImgOn: !!p.closingImg, closingSlotOn: !p.closingImg && !p.closingFullImg, closingSrc: p.closingImg || p.closingFullImg || '',
+      closingCompanionEl: mkImg(p.closingImg, p.closing.t, { borderRadius: '16px', boxShadow: '0 30px 60px rgba(23,21,34,.3)' }, true),
+      closingFullEl: mkImg(p.closingFullImg, p.closing.t, null, true),
+      closingFullOn: !!p.closingFullImg, closingCardOn: !p.closingFullImg,
+      ptype: p.ptype, category: p.category, role: p.role, client: p.client || '', hasClient: !!p.client, previewUrl: p.preview || '#', hasPreview: !!p.preview,
+      introHead: p.introHead, intro1: p.intro[0], intro2: p.intro[1],
+      goalsHead: p.goalsHead || 'Designing a user-centered solution.', goals1: p.goals[0], goals2: p.goals[1],
+      hasPre: pre.length > 0, preSections: pre,
+      hasPost: post.length > 0, postSections: post,
+      hasProc: proc.length > 0, procTabs: procTabs,
+      activeNo: cur ? String(tab + 1).padStart(2, '0') : '',
+      activeTitle: cur ? cur.s.t : '', activeDesc: cur ? cur.s.p : '',
+      activePanelImgs: activePanelImgs,
+      activeGrid: cur && (cur.s.imgs || []).length > 1 ? 'repeat(auto-fit,minmax(min(300px,100%),1fr))' : '1fr',
+      activeCount: proc.length ? (tab + 1) + ' dari ' + proc.length : '',
+      prevStep: () => this.setState(s => ({ tab: Math.max(0, (s.tab || 0) - 1) })),
+      nextStep: () => this.setState(s => ({ tab: Math.min(proc.length - 1, (s.tab || 0) + 1) })),
+      prevStyle: navBtn(tab > 0), nextStyle: navBtn(tab < proc.length - 1),
+      panelRef: this.panelRef, panelImgBg: p.soft, softNum: 'rgba(23,21,34,.07)',
+      lbOpen: lbOpen,
+      lbEl: lbOpen ? React.createElement('img', { src: flat[lb].src, alt: flat[lb].alt || '', style: { maxWidth: '96vw', maxHeight: '78vh', width: 'auto', height: 'auto', borderRadius: '12px', boxShadow: '0 40px 100px rgba(0,0,0,.55)', animation: 'lbZoom .3s cubic-bezier(.22,1,.36,1) both' } }) : null,
+      lbTitle: lbOpen ? flat[lb].stepTitle : '', lbCount: lbOpen ? (lb + 1) + ' / ' + flat.length : '',
+      lbHasPrev: lbOpen && lb > 0, lbHasNext: lbOpen && lb < flat.length - 1,
+      closeLb: () => this.setState({ lb: -1 }),
+      lbPrev: () => this.setState(s => { const n = Math.max(0, s.lb - 1); return { lb: n, tab: flat[n] ? flat[n].step : s.tab }; }),
+      lbNext: () => this.setState(s => { const n = Math.min(flat.length - 1, s.lb + 1); return { lb: n, tab: flat[n] ? flat[n].step : s.tab }; }),
+      quote: p.quote,
+      closingTitle: p.closing.t, closingPoints: p.closing.points, closingIntro: p.closingIntro || '', hasClosingIntro: !!p.closingIntro,
+      showBanner: !!p.banner,
+      related: p.related.map(k => ({ key: k, title: D[k].title, cat: D[k].kicker.split('•')[1].trim(), soft: D[k].soft, accent: D[k].accent, cover: D[k].cover, href: 'Project Detail.dc.html?p=' + k, mockEl: mkImg(D[k].heroImg, D[k].title + ' mockup', { maxHeight: '210px', width: 'auto', maxWidth: '100%', objectFit: 'contain', margin: '0 auto', filter: 'drop-shadow(0 18px 30px rgba(23,21,34,.22))' }, false) })),
+    };
+  }
+
+  componentDidMount() {
+    this.cleanups = [];
+    this.shown = new Set();
+    this.fine = matchMedia('(pointer:fine)').matches;
+    this.wideMq = matchMedia('(min-width: 760px)');
+    this.motion = (this.props.motion ?? true) && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.title = this.proj.title + ' — Raihana Sakhi';
+    scrollTo(0, 0);
+    this.applyTweaks();
+    this.initReveals();
+    this.initNav();
+    this.initRelated();
+    this.initLightbox();
+    if (this.fine && this.motion && (this.props.cursorFx ?? true)) this.initCursor();
+    if (this.fine) this.initMagnetic();
+    if (this.motion) this.tick();
+    this.on(document, 'keydown', e => {
+      if (this.state.lb < 0) return;
+      if (e.key === 'Escape') this.setState({ lb: -1 });
+      else if (e.key === 'ArrowLeft') this.setState(s => { const n = Math.max(0, s.lb - 1); return { lb: n, tab: this._flat && this._flat[n] ? this._flat[n].step : s.tab }; });
+      else if (e.key === 'ArrowRight') this.setState(s => { const n = this._flat ? Math.min(this._flat.length - 1, s.lb + 1) : s.lb; return { lb: n, tab: this._flat && this._flat[n] ? this._flat[n].step : s.tab }; });
+    });
+  }
+
+  componentDidUpdate() {
+    document.title = this.proj.title + ' — Raihana Sakhi';
+    this.applyTweaks();
+    this.syncReveals();
+    document.querySelectorAll('[data-num][data-done]').forEach(el => {
+      el.textContent = this.fmtNum(+el.dataset.target, +(el.dataset.dec || 0)) + (el.dataset.suffix || '');
+    });
+    if (this.panelRef && this.panelRef.current && this._prevTab !== this.state.tab) {
+      const el = this.panelRef.current;
+      el.style.animation = 'none'; void el.offsetWidth; el.style.animation = 'panelIn .32s cubic-bezier(.22,1,.36,1)';
+      this._prevTab = this.state.tab;
+    }
+  }
+
+  componentWillUnmount() {
+    (this.cleanups || []).forEach(f => f());
+    cancelAnimationFrame(this.raf);
+    cancelAnimationFrame(this.cRaf);
+  }
+
+  on(t, e, f, o) { t.addEventListener(e, f, o); this.cleanups.push(() => t.removeEventListener(e, f, o)); }
+
+  fmtNum(v, dec) { return dec ? v.toFixed(dec).replace('.', ',') : String(Math.round(v)); }
+
+  // ---- reveals + count-ups (rect-based; survives re-renders) ----------
+  revealEl(el) {
+    el.style.transitionDelay = el.dataset.rvd || '0s';
+    el.setAttribute('data-shown', '1');
+    this.shown.add(el);
+  }
+
+  initReveals() {
+    if (!this.motion) {
+      document.querySelectorAll('[data-rv]').forEach(el => el.setAttribute('data-shown', '1'));
+    }
+    this.checkReveals();
+    const onScroll = () => this.checkReveals();
+    this.on(window, 'scroll', onScroll, { passive: true });
+    this.on(window, 'resize', onScroll, { passive: true });
+  }
+
+  checkReveals() {
+    const vh = innerHeight;
+    if (this.motion) {
+      document.querySelectorAll('[data-rv]:not([data-shown])').forEach(el => {
+        const r = el.getBoundingClientRect();
+        if (r.top < vh * 0.9 && r.bottom > 0) this.revealEl(el);
+      });
+    } else {
+      document.querySelectorAll('[data-rv]:not([data-shown])').forEach(el => el.setAttribute('data-shown', '1'));
+    }
+    document.querySelectorAll('[data-num]:not([data-started])').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.92 && r.bottom > 0) {
+        el.dataset.started = '1';
+        this.countUp(el, +el.dataset.target, +(el.dataset.dec || 0), el.dataset.suffix || '', 1400, () => { el.dataset.done = '1'; });
+      }
+    });
+  }
+
+  syncReveals() { this.checkReveals(); }
+
+  countUp(el, target, dec, suffix, dur, onDone) {
+    if (!this.motion) { el.textContent = this.fmtNum(target, dec) + suffix; if (onDone) onDone(); return; }
+    const t0 = performance.now();
+    const step = t => {
+      const pr = Math.min(1, (t - t0) / dur);
+      el.textContent = this.fmtNum(target * (1 - Math.pow(1 - pr, 3)), dec) + suffix;
+      if (pr < 1) requestAnimationFrame(step); else if (onDone) onDone();
+    };
+    requestAnimationFrame(step);
+  }
+
+  // ---- navbar glass + reading progress ---------------------------------
+  initNav() {
+    const nav = document.getElementById('nav');
+    const menu = document.getElementById('navlinks');
+    const bar = document.getElementById('pbar');
+    const onScroll = () => {
+      if (nav) {
+        const s = scrollY > 36;
+        nav.style.background = s ? 'rgba(250,247,240,.78)' : 'transparent';
+        nav.style.backdropFilter = s ? 'blur(14px) saturate(1.4)' : 'none';
+        nav.style.webkitBackdropFilter = nav.style.backdropFilter;
+        nav.style.boxShadow = s ? '0 10px 30px rgba(23,21,34,.09)' : 'none';
+        nav.style.borderColor = s ? 'rgba(23,21,34,.08)' : 'transparent';
+      }
+      if (bar) {
+        const max = document.documentElement.scrollHeight - innerHeight;
+        bar.style.width = (max > 0 ? Math.min(100, (scrollY / max) * 100) : 0) + '%';
+      }
+    };
+    this.on(window, 'scroll', onScroll, { passive: true });
+    onScroll();
+    const layoutNav = () => { if (menu) menu.style.display = this.wideMq.matches ? 'flex' : 'none'; };
+    layoutNav();
+    this.on(this.wideMq, 'change', layoutNav);
+  }
+
+  // ---- lightbox for case-study diagrams --------------------------------
+  initLightbox() {
+    const box = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    if (!box || !img) return;
+    const close = () => {
+      box.style.display = 'none';
+      document.body.style.overflow = '';
+      img.removeAttribute('src');
+    };
+    const open = src => {
+      img.src = src;
+      box.style.display = 'flex';
+      box.style.animation = 'lbIn .25s ease both';
+      img.style.animation = 'lbZoom .3s cubic-bezier(.22,1,.36,1) both';
+      document.body.style.overflow = 'hidden';
+    };
+    this.on(document, 'click', e => {
+      const t = e.target.closest && e.target.closest('img[data-zoom]');
+      if (t && t.getAttribute('src')) { e.preventDefault(); open(t.getAttribute('src')); }
+    });
+    this.on(box, 'click', close);
+    this.on(document, 'keydown', e => { if (e.key === 'Escape' && box.style.display === 'flex') close(); });
+    this.cleanups.push(() => { document.body.style.overflow = ''; });
+  }
+
+  // ---- related card hover fx -------------------------------------------
+  initRelated() {
+    document.querySelectorAll('[data-rel]').forEach(card => {
+      const mock = card.querySelector('[data-relmock]');
+      const arrow = card.querySelector('[data-relarrow]');
+      this.on(card, 'mouseenter', () => { if (mock) mock.style.transform = 'scale(1.05)'; if (arrow) arrow.style.transform = 'translateX(6px)'; });
+      this.on(card, 'mouseleave', () => { if (mock) mock.style.transform = 'scale(1)'; if (arrow) arrow.style.transform = 'translateX(0)'; });
+    });
+  }
+
+  // ---- hero mockup parallax ----------------------------------------------
+  tick() {
+    const loop = () => {
+      this.raf = requestAnimationFrame(loop);
+      if (!this.wideMq.matches) return;
+      const vh = innerHeight;
+      document.querySelectorAll('[data-para]').forEach(el => {
+        const host = el.parentElement;
+        const r = host.getBoundingClientRect();
+        if (r.bottom < -100 || r.top > vh + 100) return;
+        const target = (r.top + r.height / 2 - vh / 2) * -(+el.dataset.para || 0.06);
+        el._y = el._y === undefined ? target : el._y + (target - el._y) * 0.18;
+        el.style.transform = 'translateY(' + el._y.toFixed(2) + 'px)';
+      });
+    };
+    loop();
+  }
+
+  // ---- custom cursor ------------------------------------------------------
+  initCursor() {
+    const cur = document.getElementById('cur');
+    if (!cur) return;
+    cur.style.background = this.proj.accent;
+    const st = document.createElement('style');
+    st.textContent = '@media (pointer:fine){ *{cursor:none !important} }';
+    document.head.appendChild(st);
+    this.cleanups.push(() => st.remove());
+    let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, s = 1, ts = 1;
+    this.on(document, 'mousemove', e => { tx = e.clientX; ty = e.clientY; cur.style.opacity = '1'; });
+    this.on(document, 'mouseover', e => { ts = e.target.closest && e.target.closest('a,button,[data-csimg],img[data-zoom],image-slot') ? 3 : 1; });
+    this.on(document.documentElement, 'mouseleave', () => { cur.style.opacity = '0'; });
+    const loop = () => {
+      x += (tx - x) * 0.22; y += (ty - y) * 0.22; s += (ts - s) * 0.16;
+      cur.style.transform = 'translate(' + (x - 5) + 'px,' + (y - 5) + 'px) scale(' + s.toFixed(3) + ')';
+      this.cRaf = requestAnimationFrame(loop);
+    };
+    loop();
+    this.cleanups.push(() => cancelAnimationFrame(this.cRaf));
+  }
+
+  // ---- magnetic buttons ----------------------------------------------------
+  initMagnetic() {
+    document.querySelectorAll('[data-mag]').forEach(b => {
+      b.style.transition = (b.style.transition ? b.style.transition + ',' : '') + 'transform .3s cubic-bezier(.22,1,.36,1)';
+      this.on(b, 'mousemove', e => {
+        const r = b.getBoundingClientRect();
+        const dx = (e.clientX - r.left - r.width / 2) * 0.18;
+        const dy = (e.clientY - r.top - r.height / 2) * 0.3;
+        b.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(1.04)';
+      });
+      this.on(b, 'mouseleave', () => { b.style.transform = 'translate(0,0) scale(1)'; });
+    });
+  }
+
+  applyTweaks() {
+    const anims = (this.props.motion ?? true) && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-anim]').forEach(el => { el.style.animationPlayState = anims ? 'running' : 'paused'; });
+  }
+}
+</script>
+</body>
+</html>
