@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <title>Raihana Sakhi — Portfolio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&amp;family=Instrument+Serif:ital@0;1&amp;family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet">
+  <script src="image-slot.js"></script>
+  <style>
+    html{scroll-behavior:smooth}
+    body{margin:0;background:#FAF7F0;color:#171522;font-family:'Instrument Sans','Segoe UI',sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+    ::selection{background:#C6F24E;color:#171522}
+    body::after{content:'';position:fixed;inset:0;z-index:90;pointer-events:none;opacity:.05;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E")}
+    @keyframes wordUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+    @keyframes popBounce{0%{opacity:0;transform:scale(.2)}60%{opacity:1;transform:scale(1.12)}80%{transform:scale(.95)}100%{opacity:1;transform:scale(1)}}
+    @keyframes floatY{from{transform:translateY(-6px) rotate(-2deg)}to{transform:translateY(8px) rotate(3deg)}}
+    @keyframes floatB{from{transform:translateY(5px) rotate(4deg)}to{transform:translateY(-7px) rotate(-2deg)}}
+    @keyframes floatP{from{transform:translateY(4px)}to{transform:translateY(-8px)}}
+    @keyframes dashDraw{to{stroke-dashoffset:0}}
+    @keyframes mqL{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+    @keyframes mqR{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+    @keyframes gradShift{0%{background-position:0% 50%}100%{background-position:300% 50%}}
+    @keyframes spinSlow{to{transform:rotate(360deg)}}
+    @keyframes lbIn{from{opacity:0}to{opacity:1}}
+    @keyframes lbZoom{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+    [data-rv]{opacity:0;transition:opacity .7s cubic-bezier(.22,1,.36,1),transform .7s cubic-bezier(.22,1,.36,1)}
+    [data-rv="up"]{transform:translateY(30px)}
+    [data-rv="left"]{transform:translateX(-64px)}
+    [data-rv="right"]{transform:translateX(64px)}
+    [data-rv="pop"]{transform:scale(.82)}
+    [data-rv="rot"]{transform:rotate(-40deg) scale(.4)}
+    [data-rv="line"]{transform:translateY(110%)}
+    [data-rv][data-shown]{opacity:1 !important;transform:none !important}
+    [data-rv="rot"][data-shown]{transform:rotate(-8deg) !important}
+  </style>
+</helmet>
+
+<div id="cur" aria-hidden="true" style="position:fixed;top:0;left:0;width:10px;height:10px;border-radius:50%;background:#5B3DF5;z-index:999;pointer-events:none;opacity:0;will-change:transform"></div>
+
+<div id="lightbox" role="dialog" aria-label="Image viewer" style="position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;background:rgba(15,14,23,.9);padding:clamp(14px,3vw,40px);cursor:zoom-out;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)">
+  <span aria-hidden="true" style="position:absolute;top:20px;right:26px;width:46px;height:46px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);color:#fff;display:grid;place-items:center;font-size:22px;font-family:'Space Grotesk',sans-serif">✕</span>
+  <img id="lightbox-img" alt="" style="max-width:94vw;max-height:90vh;width:auto;height:auto;border-radius:12px;box-shadow:0 40px 100px rgba(0,0,0,.55)">
+</div>
+
+<nav id="nav" aria-label="Main" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1160px,94vw);z-index:80;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px 10px 22px;border-radius:999px;border:1px solid transparent;background:transparent;transition:background .35s ease,box-shadow .35s ease,border-color .35s ease">
+  <a href="#top" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#171522;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px"><span style="color:#5B3DF5;font-size:18px;line-height:1">✦</span><span>Hana's Portfolio</span></a>
+  <div id="navlinks" style="display:flex;align-items:center;gap:2px">
+    <a data-nav="" href="#about" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:background .25s ease,color .25s ease">About Me</a>
+    <a data-nav="" href="#project" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:background .25s ease,color .25s ease">Project</a>
+    <a data-nav="" href="#experience" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:background .25s ease,color .25s ease">Experience</a>
+    <a data-nav="" href="#contact" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:background .25s ease,color .25s ease">Contact Me</a>
+  </div>
+</nav>
+
+<header id="top" data-screen-label="Hero" style="position:relative;padding-top:clamp(120px,16vh,175px)">
+  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(900px 480px at 50% -10%,rgba(91,61,245,.10),transparent 70%)"></div>
+  <div style="position:relative;width:min(1140px,92vw);margin:0 auto;text-align:center">
+
+    <div data-doodle="" data-anim="" style="position:absolute;left:2%;top:8%;animation:floatY 5s ease-in-out infinite alternate">
+      <svg width="38" height="38" viewBox="0 0 24 24" fill="none"><path d="M12 2 L13.7 10.3 L22 12 L13.7 13.7 L12 22 L10.3 13.7 L2 12 L10.3 10.3 Z" fill="#FFC94D" stroke="#171522" stroke-width="1.3" stroke-linejoin="round"></path></svg>
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" style="margin-left:-6px"><path d="M12 3 L13.4 10.6 L21 12 L13.4 13.4 L12 21 L10.6 13.4 L3 12 L10.6 10.6 Z" fill="#5B3DF5"></path></svg>
+    </div>
+    <div data-doodle="" data-anim="" style="position:absolute;left:5%;top:64%;animation:floatB 6s ease-in-out infinite alternate">
+      <svg width="52" height="52" viewBox="0 0 48 48" fill="none"><path d="M24 8 C 18 16, 14 22, 14 28 a10 10 0 0 0 20 0 c0-6-4-12-10-20z" fill="#FFFDF8" stroke="#171522" stroke-width="1.6" stroke-linejoin="round"></path><circle cx="24" cy="28" r="3.4" fill="#7DD3FC" stroke="#171522" stroke-width="1.4"></circle><path d="M24 31.4 L24 40" stroke="#171522" stroke-width="1.6" stroke-linecap="round"></path></svg>
+    </div>
+    <div data-doodle="" data-anim="" style="position:absolute;right:3%;top:6%;animation:floatB 5.4s ease-in-out infinite alternate">
+      <svg width="46" height="52" viewBox="0 0 44 50" fill="none"><path d="M10 14 L14 44 a3 3 0 0 0 3 2.6 h10 a3 3 0 0 0 3-2.6 L34 14 Z" fill="#FFFDF8" stroke="#171522" stroke-width="1.6" stroke-linejoin="round"></path><path d="M8 14 H36" stroke="#171522" stroke-width="1.6" stroke-linecap="round"></path><path d="M12 22 H32" stroke="#7DD3FC" stroke-width="3" stroke-linecap="round"></path><path d="M17 4 C 19 7, 15 9, 17 12 M25 3 C 27 6, 23 8, 25 11" stroke="#171522" stroke-width="1.4" stroke-linecap="round"></path></svg>
+    </div>
+    <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .9s both;position:absolute;right:1%;top:58%">
+      <a data-anim="" href="#contact" style="display:inline-block;background:#FF6B5B;color:#FFFDF8;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:999px;text-decoration:none;box-shadow:3px 5px 0 rgba(23,21,34,.9);border:1.5px solid #171522;animation:floatB 5.5s ease-in-out infinite alternate">Let's Connect ↗</a>
+    </span>
+
+    <h1 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(46px,7.4vw,92px);line-height:1.06;letter-spacing:-0.03em">
+      <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .05s both;font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;letter-spacing:0">Hello!</span>
+      <span style="display:inline-block;width:clamp(54px,6.6vw,82px);height:clamp(54px,6.6vw,82px);border-radius:50%;border:2px solid #171522;overflow:hidden;vertical-align:middle;margin:0 clamp(4px,1vw,14px);position:relative;top:-6px;background:#EDE8FF;animation:popBounce .8s cubic-bezier(.34,1.56,.64,1) .5s both"><image-slot id="hero-avatar" shape="circle" src="uploads/Foto%20Hana_nobg.png" fit="cover" position="50% 22%" placeholder="You" style="display:block;width:100%;height:100%"></image-slot></span>
+      <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .16s both">I'm</span>
+      <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .26s both">Raihana</span>
+      <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .36s both">Sakhi</span>
+      <br>
+      <span style="position:relative;display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .46s both">Aswanda
+        <svg aria-hidden="true" style="position:absolute;left:2%;bottom:-16px;width:96%" height="16" viewBox="0 0 240 16" preserveAspectRatio="none" fill="none"><path d="M4 11 C 20 3, 34 15, 50 9 S 80 3, 96 9 S 126 15, 142 9 S 172 3, 188 9 S 224 13, 236 7" stroke="#5B3DF5" stroke-width="5" stroke-linecap="round" pathLength="1" style="stroke-dasharray:1;stroke-dashoffset:1;animation:dashDraw 1s cubic-bezier(.22,1,.36,1) 1.05s both"></path></svg>
+      </span>
+    </h1>
+
+    <p style="margin:34px auto 0;max-width:640px;font-size:clamp(16px,2vw,19px);line-height:1.68;color:#5C5870;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .62s both">Fresh Graduate in Information Systems passionate about crafting intuitive and impactful digital experiences through <span style="display:inline-block;background:#C6F24E;color:#171522;font-weight:600;padding:1px 9px;border-radius:6px;transform:rotate(-1.5deg) skewX(-4deg)">UI/UX design</span> — backed by user research, business analysis, and <strong style="color:#5B3DF5;font-weight:600">data-driven insights</strong>.</p>
+  </div>
+
+  <div id="stack" data-screen-label="Nav Cards" style="position:relative;height:430px;margin-top:clamp(44px,7vh,74px)">
+    <a data-stk="-7" href="#project" style="position:absolute;left:50%;top:10px;margin-left:-172px;width:344px;transform:translateX(-40px) rotate(-9deg) scale(.95);transition:transform .85s cubic-bezier(.22,1,.36,1);z-index:1;text-decoration:none;color:#171522;display:block">
+      <span data-hov="" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:#FFFDF8;border:1.5px solid #171522;border-radius:22px;padding:30px 26px 24px;box-shadow:5px 7px 0 rgba(23,21,34,.12);transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="transform:translateY(-14px) rotate(7deg);box-shadow:10px 22px 0 rgba(91,61,245,.25)">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="5" y="8" width="30" height="24" rx="4" stroke="#171522" stroke-width="1.8"></rect><path d="M5 15 H35" stroke="#171522" stroke-width="1.8"></path><circle cx="10" cy="11.5" r="1.3" fill="#FF6B5B"></circle><circle cx="14.5" cy="11.5" r="1.3" fill="#FFC94D"></circle><circle cx="19" cy="11.5" r="1.3" fill="#C6F24E"></circle><path d="M10 21 H22 M10 26 H30" stroke="#5B3DF5" stroke-width="2.2" stroke-linecap="round"></path></svg>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px">My Portfolio</span>
+        <span style="font-size:14.5px;line-height:1.5;color:#5C5870">Explore selected projects and my approach to design problems.</span>
+        <span style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:rgba(91,61,245,.12);border:1.5px solid #171522;font-size:17px;margin-top:6px">→</span>
+      </span>
+    </a>
+    <a data-stk="1" href="#about" style="position:absolute;left:50%;top:20px;margin-left:-172px;width:344px;transform:translateX(0) rotate(0deg) scale(1);transition:transform .85s cubic-bezier(.22,1,.36,1);z-index:3;text-decoration:none;color:#171522;display:block">
+      <span data-hov="" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:#FFFDF8;border:1.5px solid #171522;border-radius:22px;padding:30px 26px 24px;box-shadow:5px 7px 0 rgba(23,21,34,.12);transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="transform:translateY(-14px) rotate(-1deg);box-shadow:10px 22px 0 rgba(255,201,77,.45)">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><path d="M10 6 H26 L32 12 V34 H10 Z" stroke="#171522" stroke-width="1.8" stroke-linejoin="round"></path><path d="M26 6 V12 H32" stroke="#171522" stroke-width="1.8" stroke-linejoin="round"></path><path d="M15 18 H27 M15 23 H27 M15 28 H22" stroke="#FFC94D" stroke-width="2.4" stroke-linecap="round"></path></svg>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px">About Me</span>
+        <span style="font-size:14.5px;line-height:1.5;color:#5C5870">A closer look at my background, skills, and creative journey.</span>
+        <span style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:rgba(255,201,77,.3);border:1.5px solid #171522;font-size:17px;margin-top:6px">→</span>
+      </span>
+    </a>
+    <a data-stk="7" href="#contact" style="position:absolute;left:50%;top:8px;margin-left:-172px;width:344px;transform:translateX(40px) rotate(8deg) scale(.94);transition:transform .85s cubic-bezier(.22,1,.36,1);z-index:2;text-decoration:none;color:#171522;display:block">
+      <span data-hov="" style="display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:#FFFDF8;border:1.5px solid #171522;border-radius:22px;padding:30px 26px 24px;box-shadow:5px 7px 0 rgba(23,21,34,.12);transition:transform .35s cubic-bezier(.22,1,.36,1),box-shadow .35s ease" style-hover="transform:translateY(-14px) rotate(-7deg);box-shadow:10px 22px 0 rgba(198,242,78,.55)">
+        <svg width="40" height="40" viewBox="0 0 40 40" fill="none"><rect x="5" y="9" width="30" height="22" rx="4" stroke="#171522" stroke-width="1.8"></rect><path d="M6 11 L20 22 L34 11" stroke="#171522" stroke-width="1.8" stroke-linejoin="round"></path><path d="M8 28 L15 22 M32 28 L25 22" stroke="#C6F24E" stroke-width="2.4" stroke-linecap="round"></path></svg>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px">Contact Me</span>
+        <span style="font-size:14.5px;line-height:1.5;color:#5C5870">Let's work together to bring your ideas and vision to life.</span>
+        <span style="display:grid;place-items:center;width:42px;height:42px;border-radius:50%;background:rgba(198,242,78,.4);border:1.5px solid #171522;font-size:17px;margin-top:6px">→</span>
+      </span>
+    </a>
+  </div>
+</header>
+
+<section id="about" data-screen-label="About" style="padding:clamp(70px,10vw,120px) 0 clamp(50px,7vw,80px);scroll-margin-top:90px">
+  <div style="width:min(1140px,92vw);margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(440px,100%),1fr));gap:clamp(40px,5vw,64px);align-items:center">
+    <div data-rv="left" style="position:relative;max-width:460px;margin:0 auto;width:100%">
+      <div style="position:relative;background:#FFFDF8;border:2px solid #171522;border-radius:26px;padding:12px;box-shadow:14px 14px 0 #5B3DF5">
+        <image-slot id="about-photo" shape="rounded" radius="16" src="uploads/Hanasit_nobg.png" fit="cover" position="50% 28%" placeholder="Drop your portrait here" style="display:block;width:100%;height:auto;aspect-ratio:1/1"></image-slot>
+      </div>
+      <div aria-hidden="true" style="position:absolute;top:-17px;left:50%;transform:translateX(-50%) rotate(-4deg);width:150px;height:34px;background:#7DD3FC;opacity:.92;border-radius:4px;background-image:radial-gradient(rgba(23,21,34,.28) 1.5px,transparent 1.6px);background-size:12px 12px;border:1px solid rgba(23,21,34,.25)"></div>
+      <div style="position:absolute;left:-30px;bottom:34px;width:112px;height:112px;border-radius:50%;background:#C6F24E;border:2px solid #171522;box-shadow:5px 6px 0 rgba(23,21,34,.2)">
+        <svg data-anim="" viewBox="0 0 100 100" style="position:absolute;inset:0;width:100%;height:100%;animation:spinSlow 16s linear infinite"><defs><path id="badge-circ" d="M50,50 m-35,0 a35,35 0 1,1 70,0 a35,35 0 1,1 -70,0"></path></defs><text style="font-family:'Space Mono',monospace;font-size:9px;letter-spacing:2.6px;fill:#171522"><textPath href="#badge-circ">OPEN FOR OPPORTUNITIES ✦ LET'S TALK ✦</textPath></text></svg>
+        <span style="position:absolute;inset:0;display:grid;place-items:center;font-size:22px">✉</span>
+      </div>
+    </div>
+    <div>
+      <div data-rv="up" style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;color:#5B3DF5;font-weight:700">✦ ABOUT ME</div>
+      <h2 data-rv="up" data-rvd=".06s" style="margin:14px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,4.4vw,52px);line-height:1.1;letter-spacing:-0.025em">Hi, I'm <span style="display:inline-block;background:#FFC94D;padding:1px 12px 3px;border-radius:8px;transform:rotate(-1.4deg) skewX(-4deg)">Raihana Sakhi.</span></h2>
+      <p data-rv="up" data-rvd=".12s" style="margin:22px 0 0;font-size:16.5px;line-height:1.7;color:#5C5870">I am an Information Systems graduate passionate about designing digital products that solve real user problems through thoughtful, user-centered experiences. My background combines UI/UX design, business analysis, front-end development, and data analytics — bridging user needs with business objectives and technical feasibility.</p>
+      <p data-rv="up" data-rvd=".18s" style="margin:16px 0 0;font-size:16.5px;line-height:1.7;color:#5C5870">Throughout internships, academic projects, and competitions, I have designed mobile applications across healthcare, education, agritech, fintech, and location-based services — continuously learning through collaboration and real-world challenges.</p>
+      <div id="skills" data-rv="up" data-rvd=".22s" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:22px 30px;margin-top:36px">
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:15px">UI Design</span><span data-pct="95" style="font-family:'Space Mono',monospace;font-size:13.5px;color:#5C5870">95%</span></div><div style="height:10px;border-radius:999px;background:#ECE6D9;overflow:hidden"><div data-bar="95" style="height:100%;width:95%;border-radius:999px;background:linear-gradient(90deg,#5B3DF5,#8B6CFF);transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:15px">UX Research</span><span data-pct="97" style="font-family:'Space Mono',monospace;font-size:13.5px;color:#5C5870">97%</span></div><div style="height:10px;border-radius:999px;background:#ECE6D9;overflow:hidden"><div data-bar="97" style="height:100%;width:97%;border-radius:999px;background:linear-gradient(90deg,#FF6B5B,#FF9A8D);transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:15px">Business Analysis</span><span data-pct="85" style="font-family:'Space Mono',monospace;font-size:13.5px;color:#5C5870">85%</span></div><div style="height:10px;border-radius:999px;background:#ECE6D9;overflow:hidden"><div data-bar="85" style="height:100%;width:85%;border-radius:999px;background:linear-gradient(90deg,#F0A400,#FFC94D);transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:15px">Data Analytics</span><span data-pct="80" style="font-family:'Space Mono',monospace;font-size:13.5px;color:#5C5870">80%</span></div><div style="height:10px;border-radius:999px;background:#ECE6D9;overflow:hidden"><div data-bar="80" style="height:100%;width:80%;border-radius:999px;background:linear-gradient(90deg,#0895E0,#7DD3FC);transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:15px">Prototyping</span><span data-pct="90" style="font-family:'Space Mono',monospace;font-size:13.5px;color:#5C5870">90%</span></div><div style="height:10px;border-radius:999px;background:#ECE6D9;overflow:hidden"><div data-bar="90" style="height:100%;width:90%;border-radius:999px;background:linear-gradient(90deg,#84A821,#C6F24E);transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div></div></div>
+        <div style="display:flex;flex-direction:column;gap:8px"><div style="display:flex;justify-content:space-between;align-items:baseline"><span style="font-weight:600;font-size:15px">Illustration</span><span data-pct="65" style="font-family:'Space Mono',monospace;font-size:13.5px;color:#5C5870">65%</span></div><div style="height:10px;border-radius:999px;background:#ECE6D9;overflow:hidden"><div data-bar="65" style="height:100%;width:65%;border-radius:999px;background:linear-gradient(90deg,#5B3DF5,#FF6B5B);transition:width 1.2s cubic-bezier(.22,1,.36,1)"></div></div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-screen-label="Capabilities" style="padding:clamp(50px,8vw,100px) 0 clamp(40px,6vw,70px)">
+  <div style="width:min(760px,92vw);margin:0 auto;text-align:center">
+    <h2 data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,4.4vw,52px);letter-spacing:-0.025em">My <span style="display:inline-block;background:#C6F24E;padding:0 14px 4px;border-radius:8px;transform:rotate(-1.4deg) skewX(-4deg)"><em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400">capabilities</em></span></h2>
+    <p data-rv="up" data-rvd=".08s" style="margin:18px auto 0;max-width:560px;font-size:16.5px;line-height:1.65;color:#5C5870">The services I offer are meticulously crafted and tailored to cater specifically to your <strong style="font-weight:600;color:#171522">unique needs</strong> and <strong style="font-weight:600;color:#171522">requirements</strong>.</p>
+  </div>
+  <div style="margin-top:46px;display:flex;flex-direction:column;gap:16px">
+    <div style="overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)">
+      <div id="mq1" data-anim="" style="display:flex;gap:14px;width:max-content;padding:4px 0;animation:mqL 38s linear infinite" style-hover="animation-play-state:paused">
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">✦</span>Mobile Design</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">◐</span>UX &amp; Product Design</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#0895E0;transform:translateY(-2px)"><span style="color:#0895E0;font-size:13px">△</span>UX Research</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#F0A400;transform:translateY(-2px)"><span style="color:#F0A400;font-size:13px">✳</span>Business Analysis</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">⌗</span>Web Development</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">▲</span>Data Analytics</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#0895E0;transform:translateY(-2px)"><span style="color:#0895E0;font-size:13px">◈</span>Design Systems</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">✦</span>Mobile Design</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">◐</span>UX &amp; Product Design</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#0895E0;transform:translateY(-2px)"><span style="color:#0895E0;font-size:13px">△</span>UX Research</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#F0A400;transform:translateY(-2px)"><span style="color:#F0A400;font-size:13px">✳</span>Business Analysis</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">⌗</span>Web Development</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">▲</span>Data Analytics</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#0895E0;transform:translateY(-2px)"><span style="color:#0895E0;font-size:13px">◈</span>Design Systems</span>
+      </div>
+    </div>
+    <div style="overflow:hidden;mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)">
+      <div id="mq2" data-anim="" style="display:flex;gap:14px;width:max-content;padding:4px 0;animation:mqR 45s linear infinite" style-hover="animation-play-state:paused">
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#F0A400;transform:translateY(-2px)"><span style="color:#F0A400;font-size:13px">●</span>Figma</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">◇</span>Prototyping</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">▤</span>Tableau</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#0895E0;transform:translateY(-2px)"><span style="color:#0895E0;font-size:13px">⟡</span>Python</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#F0A400;transform:translateY(-2px)"><span style="color:#F0A400;font-size:13px">▦</span>SQL</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">✚</span>User Testing</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">✎</span>Wireframing</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#F0A400;transform:translateY(-2px)"><span style="color:#F0A400;font-size:13px">●</span>Figma</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">◇</span>Prototyping</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">▤</span>Tableau</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#0895E0;transform:translateY(-2px)"><span style="color:#0895E0;font-size:13px">⟡</span>Python</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#F0A400;transform:translateY(-2px)"><span style="color:#F0A400;font-size:13px">▦</span>SQL</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#5B3DF5;transform:translateY(-2px)"><span style="color:#5B3DF5;font-size:13px">✚</span>User Testing</span>
+        <span data-hov="" style="display:inline-flex;align-items:center;gap:9px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:11px 22px;font-size:15px;font-weight:500;white-space:nowrap;transition:border-color .25s ease,transform .25s ease" style-hover="border-color:#FF6B5B;transform:translateY(-2px)"><span style="color:#FF6B5B;font-size:13px">✎</span>Wireframing</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="project" data-screen-label="Projects" style="padding:clamp(40px,6vw,70px) 0 clamp(60px,8vw,100px);scroll-margin-top:90px">
+  <div style="width:min(1140px,92vw);margin:0 auto;display:flex;flex-direction:column;gap:clamp(28px,4vw,44px)">
+
+    <article data-rv="up" data-proj="" data-accent="#5B3DF5" data-screen-label="Project — Ternovia" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:clamp(24px,4vw,48px);align-items:center;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.12);border-radius:30px;padding:clamp(22px,3.5vw,44px);transition:border-color .35s ease,box-shadow .35s ease;box-shadow:0 1px 0 rgba(23,21,34,.04)">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#5B3DF5"></span>UI/UX DESIGN • INTERACTIVE PROTOTYPE</div>
+        <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">Ternovia</h3>
+        <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">Designing a livestock marketplace that streamlines cattle trading and connects farmers, buyers, and government agencies in one trusted platform.</p>
+        <a href="Project Detail.dc.html?p=ternovia" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#5B3DF5">View Project<span>→</span></a>
+      </div>
+      <div style="position:relative;border-radius:22px;background:#EDE8FF;min-height:clamp(300px,34vw,430px);overflow:hidden">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <div data-para="0.07" data-mock="" style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:clamp(18px,3vw,34px);will-change:transform">
+            <img src="uploads/ternovia-hero-mockup-4dd9c5a2.png" alt="Ternovia mockup" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block;filter:drop-shadow(0 26px 44px rgba(23,21,34,.22))">
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article data-rv="up" data-proj="" data-accent="#FFC94D" data-screen-label="Project — T-Space" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:clamp(24px,4vw,48px);align-items:center;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.12);border-radius:30px;padding:clamp(22px,3.5vw,44px);transition:border-color .35s ease,box-shadow .35s ease;box-shadow:0 1px 0 rgba(23,21,34,.04)">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#F0A400"></span>UI/UX DESIGN • BUSINESS ANALYSIS • MOBILE DEV</div>
+        <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">T-Space</h3>
+        <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">Designing a location-based platform that helps users discover and access public facilities more efficiently.</p>
+        <a href="Project Detail.dc.html?p=tspace" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#F0A400">View Project<span>→</span></a>
+      </div>
+      <div style="position:relative;border-radius:22px;background:#FFF3D4;min-height:clamp(300px,34vw,430px);overflow:hidden">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <div data-para="0.07" data-mock="" style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:clamp(18px,3vw,34px);will-change:transform">
+            <img src="uploads/tspace-hero-mockup-1eb3899c.png" alt="T-Space mockup" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block;filter:drop-shadow(0 26px 44px rgba(23,21,34,.22))">
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article data-rv="up" data-proj="" data-accent="#7DD3FC" data-screen-label="Project — DentalRave" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:clamp(24px,4vw,48px);align-items:center;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.12);border-radius:30px;padding:clamp(22px,3.5vw,44px);transition:border-color .35s ease,box-shadow .35s ease;box-shadow:0 1px 0 rgba(23,21,34,.04)">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#0895E0"></span>UI/UX DESIGN • MOBILE APP</div>
+        <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">DentalRave</h3>
+        <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">A playful dental-care companion for kids — making oral hygiene fun through gamified reminders and progress tracking.</p>
+        <a href="Project Detail.dc.html?p=dentalrave" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#0895E0">View Project<span>→</span></a>
+      </div>
+      <div style="position:relative;border-radius:22px;background:#E2F4FE;min-height:clamp(300px,34vw,430px);overflow:hidden">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <div data-para="0.07" data-mock="" style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:clamp(18px,3vw,34px);will-change:transform">
+            <img src="uploads/dentalrave-hero-mockup-8907ee1f.png" alt="DentalRave mockup" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block;filter:drop-shadow(0 26px 44px rgba(23,21,34,.22))">
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <article data-rv="up" data-proj="" data-accent="#FF6B5B" data-screen-label="Project — EventU" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(400px,100%),1fr));gap:clamp(24px,4vw,48px);align-items:center;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.12);border-radius:30px;padding:clamp(22px,3.5vw,44px);transition:border-color .35s ease,box-shadow .35s ease;box-shadow:0 1px 0 rgba(23,21,34,.04)">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#FF6B5B"></span>UI/UX DESIGN • MOBILE APP</div>
+        <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">EventU</h3>
+        <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">A campus event platform that helps students discover, register, and manage university events in one place.</p>
+        <a href="Project Detail.dc.html?p=eventu" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#FF6B5B">View Project<span>→</span></a>
+      </div>
+      <div style="position:relative;border-radius:22px;background:#FFE8E4;min-height:clamp(300px,34vw,430px);overflow:hidden">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <div data-para="0.07" data-mock="" style="position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center;padding:clamp(18px,3vw,34px);will-change:transform">
+            <img src="uploads/eventu-hero-mockup-fd49f705.png" alt="EventU mockup" style="max-width:100%;max-height:100%;width:auto;height:auto;display:block;filter:drop-shadow(0 26px 44px rgba(23,21,34,.22))">
+          </div>
+        </div>
+      </div>
+    </article>
+  </div>
+</section>
+
+<section data-screen-label="Testimonial" style="padding:clamp(50px,8vw,100px) 0">
+  <div style="width:min(760px,92vw);margin:0 auto;text-align:center">
+    <div data-rv="rot" data-rvto="rotate(-8deg)" style="font-family:'Instrument Serif',serif;font-size:clamp(80px,10vw,120px);line-height:.55;color:#FF6B5B;display:inline-block">“</div>
+    <blockquote data-heal="1" style="margin:26px 0 0;padding:0">
+      <span style="display:block;overflow:hidden"><span data-rv="line" style="display:block;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(22px,3vw,32px);line-height:1.4;letter-spacing:-0.01em">This project strengthened my ability to transform</span></span>
+      <span style="display:block;overflow:hidden"><span data-rv="line" data-rvd=".1s" style="display:block;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(22px,3vw,32px);line-height:1.4;letter-spacing:-0.01em">user research into <em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:#5B3DF5">meaningful product experiences</em>.</span></span>
+      <span style="display:block;overflow:hidden"><span data-rv="line" data-rvd=".2s" style="display:block;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(22px,3vw,32px);line-height:1.4;letter-spacing:-0.01em">It reinforced the importance of validating design</span></span>
+      <span style="display:block;overflow:hidden"><span data-rv="line" data-rvd=".3s" style="display:block;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:clamp(22px,3vw,32px);line-height:1.4;letter-spacing:-0.01em">decisions through usability testing and iterative improvements.</span></span>
+    </blockquote>
+    <div data-rv="up" data-rvd=".35s" style="margin-top:28px;font-family:'Space Mono',monospace;font-size:13px;letter-spacing:.14em;color:#171522">— RAIHANA SAKHI ASWANDA</div>
+    <div data-rv="up" data-rvd=".4s" style="margin-top:6px;font-size:14px;color:#5C5870">Reflection from a UI/UX case study</div>
+  </div>
+</section>
+
+<section id="experience" data-screen-label="Professional Journey" style="scroll-margin-top:90px;width:min(1560px,calc(100vw - 20px));margin:0 auto;background:#EFEAFE;border-radius:clamp(28px,4vw,48px);padding:clamp(70px,9vw,110px) 0">
+  <div style="width:min(1140px,92vw);margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:clamp(40px,5vw,72px);align-items:start">
+    <div style="position:sticky;top:110px;align-self:start">
+      <div data-rv="up" style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;color:#5B3DF5;font-weight:700">✦ EXPERIENCE</div>
+      <h2 data-rv="up" data-rvd=".06s" style="margin:14px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,4.6vw,56px);line-height:1.06;letter-spacing:-0.025em">Professional<br><em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:#5B3DF5">Journey</em></h2>
+      <p data-rv="up" data-rvd=".12s" style="margin:22px 0 0;max-width:44ch;font-size:16.5px;line-height:1.7;color:#5C5870">My journey spans UI/UX design, software development, business analysis, data analytics, and community leadership. Through internships, academic projects, and organizational experiences, I have collaborated with multidisciplinary teams to solve real-world problems and create user-centered digital products.</p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:28px">
+
+      <article data-rv="left" data-screen-label="Journey 01" style="position:sticky;top:96px;background:#FF6B5B;border:2px solid #171522;border-radius:26px;padding:clamp(20px,3vw,30px);overflow:hidden;box-shadow:0 -12px 34px rgba(23,21,34,.10)">
+        <span aria-hidden="true" style="position:absolute;top:-16px;right:12px;font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(86px,9vw,126px);color:rgba(23,21,34,.15);letter-spacing:-.05em;pointer-events:none">01</span>
+        <span style="display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:rgba(255,253,248,.9);border:1.5px solid #171522;font-family:'Space Mono',monospace;font-size:15px;font-weight:700">&lt;/&gt;</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0;position:relative">
+          <image-slot id="j1-a" shape="rounded" radius="12" src="uploads/01_lima-benua_foto-tim.png" fit="cover" placeholder="Team collaboration" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+          <image-slot id="j1-b" shape="rounded" radius="12" src="uploads/01_lima-benua_sertifikat.jpg" fit="cover" position="50% 42%" placeholder="Certificate" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin:18px 0 0;flex-wrap:wrap">
+          <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.01em">Front End Mobile Developer</h3>
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#171522;color:#FAF7F0;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.06em;padding:4px 11px;border-radius:999px">GRADE A</span>
+        </div>
+        <div style="margin-top:6px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">PT Lima Benua Koneksindo • Magang Mandiri MBKM</div>
+        <div style="margin-top:3px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Feb – Jun 2025 • Surabaya</div>
+        <p style="margin:12px 0 0;font-size:15px;line-height:1.62;color:rgba(23,21,34,.85)">Built mobile app interfaces with the development team during an independent MBKM internship as a Sistem Informasi student at UPN “Veteran” Jawa Timur.</p>
+        <div style="margin-top:16px;background:rgba(255,253,248,.6);border-radius:14px;padding:12px 16px"><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(23,21,34,.65)">TOOLS</div><div style="margin-top:4px;font-size:14px;font-weight:600">Flutter • Dart • Git • Figma</div></div>
+        <a href="https://drive.google.com/drive/folders/1bRszzMLLIOozPpl1eePelUk8hmWU2yCw" target="_blank" rel="noopener" data-hov="" style="display:inline-flex;align-items:center;gap:9px;margin-top:18px;background:#171522;color:#FAF7F0;text-decoration:none;font-family:inherit;font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1)" style-hover="gap:16px">View case study<span>→</span></a>
+      </article>
+
+      <article data-rv="right" data-screen-label="Journey 02" style="position:sticky;top:118px;background:#C6F24E;border:2px solid #171522;border-radius:26px;padding:clamp(20px,3vw,30px);overflow:hidden;box-shadow:0 -12px 34px rgba(23,21,34,.10)">
+        <span aria-hidden="true" style="position:absolute;top:-16px;right:12px;font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(86px,9vw,126px);color:rgba(23,21,34,.13);letter-spacing:-.05em;pointer-events:none">02</span>
+        <span style="display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:rgba(255,253,248,.9);border:1.5px solid #171522;font-size:19px">◍</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0;position:relative">
+          <image-slot id="j2-a" shape="rounded" radius="12" src="uploads/02_produktifkuy_welcoming-party.png" fit="cover" placeholder="Welcoming party" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+          <image-slot id="j2-b" shape="rounded" radius="12" src="uploads/02_produktifkuy_sertifikat.png" fit="cover" position="50% 40%" placeholder="Certificate" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin:18px 0 0;flex-wrap:wrap">
+          <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.01em">External Intern</h3>
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#171522;color:#FAF7F0;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.06em;padding:4px 11px;border-radius:999px">GPA 3.86</span>
+        </div>
+        <div style="margin-top:6px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Produktifkuy • Internkuy Batch 7</div>
+        <div style="margin-top:3px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Jul 2024 – Jan 2025 • Summa Cumlaude</div>
+        <p style="margin:12px 0 0;font-size:15px;line-height:1.62;color:rgba(23,21,34,.85)">Contributed to internal management programs during Internkuy Batch 7, graduating with a Summa Cumlaude predicate and a 3.86 GPA.</p>
+        <div style="margin-top:16px;background:rgba(255,253,248,.6);border-radius:14px;padding:12px 16px"><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(23,21,34,.65)">FOCUS</div><div style="margin-top:4px;font-size:14px;font-weight:600">Internal Management • Collaboration • Communication</div></div>
+        <a href="https://drive.google.com/drive/folders/1APu2tHGk8v8y2PpgIix7Evp0IR5geqcR?usp=sharing" target="_blank" rel="noopener" data-hov="" style="display:inline-flex;align-items:center;gap:9px;margin-top:18px;background:#171522;color:#FAF7F0;text-decoration:none;font-family:inherit;font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1)" style-hover="gap:16px">View case study<span>→</span></a>
+      </article>
+
+      <article data-rv="left" data-screen-label="Journey 03" style="position:sticky;top:140px;background:#7DD3FC;border:2px solid #171522;border-radius:26px;padding:clamp(20px,3vw,30px);overflow:hidden;box-shadow:0 -12px 34px rgba(23,21,34,.10)">
+        <span aria-hidden="true" style="position:absolute;top:-16px;right:12px;font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(86px,9vw,126px);color:rgba(23,21,34,.13);letter-spacing:-.05em;pointer-events:none">03</span>
+        <span style="display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:rgba(255,253,248,.9);border:1.5px solid #171522;font-size:19px">▤</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0;position:relative">
+          <image-slot id="j3-a" shape="rounded" radius="12" src="uploads/03_data-analytics_dashboard-kelasid.png" fit="cover" placeholder="Dashboard shot" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+          <image-slot id="j3-b" shape="rounded" radius="12" src="uploads/03_data-analytics_sertifikat.jpg" fit="cover" position="50% 42%" placeholder="Certificate" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin:18px 0 0;flex-wrap:wrap">
+          <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.01em">Data Analyst</h3>
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#171522;color:#FAF7F0;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.06em;padding:4px 11px;border-radius:999px">SIB BATCH 7</span>
+        </div>
+        <div style="margin-top:6px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Studi Independen Bersertifikat • karier.mu × Kampus Merdeka</div>
+        <div style="margin-top:3px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Until Dec 2024 • Jakarta</div>
+        <p style="margin:12px 0 0;font-size:15px;line-height:1.62;color:rgba(23,21,34,.85)">Completed “Data Analysis: Transforming Data into Meaningful Insights” and built the <strong>Dashboard Pengguna Kelas.id</strong> final project — analyzing 7,112 users across learning activity, score correlation, study-field demographics, and marketing target recommendations.</p>
+        <div style="margin-top:16px;background:rgba(255,253,248,.6);border-radius:14px;padding:12px 16px"><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(23,21,34,.65)">TOOLS</div><div style="margin-top:4px;font-size:14px;font-weight:600">Data Analysis • Tableau • Dashboarding • SQL</div></div>
+        <a href="https://drive.google.com/drive/folders/1GXB48kEsrPTz0tZR4Y2yWa3Qin-BF7eN?usp=sharing" target="_blank" rel="noopener" data-hov="" style="display:inline-flex;align-items:center;gap:9px;margin-top:18px;background:#171522;color:#FAF7F0;text-decoration:none;font-family:inherit;font-weight:600;font-size:14px;padding:11px 20px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1)" style-hover="gap:16px">View case study<span>→</span></a>
+      </article>
+
+      <article data-rv="right" data-screen-label="Journey 04" style="position:sticky;top:162px;background:#FFC94D;border:2px solid #171522;border-radius:26px;padding:clamp(20px,3vw,30px);overflow:hidden;box-shadow:0 -12px 34px rgba(23,21,34,.10)">
+        <span aria-hidden="true" style="position:absolute;top:-16px;right:12px;font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(86px,9vw,126px);color:rgba(23,21,34,.13);letter-spacing:-.05em;pointer-events:none">04</span>
+        <span style="display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:rgba(255,253,248,.9);border:1.5px solid #171522;font-size:19px">✦</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0;position:relative">
+          <image-slot id="j4-a" shape="rounded" radius="12" src="uploads/04_technology-days_foto-grup.png" fit="cover" placeholder="Participant group photo" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+          <image-slot id="j4-b" shape="rounded" radius="12" src="uploads/04_technology-days_sertifikat.jpg" fit="cover" position="50% 38%" placeholder="Certificate" style="display:block;width:100%;height:auto;aspect-ratio:16/10"></image-slot>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin:18px 0 0;flex-wrap:wrap">
+          <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.01em">UI/UX Design Competition</h3>
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#171522;color:#FAF7F0;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.06em;padding:4px 11px;border-radius:999px">NATIONAL</span>
+        </div>
+        <div style="margin-top:6px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Technology Days #12 • Universitas Ahmad Dahlan</div>
+        <div style="margin-top:3px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">25–26 Nov 2023 • Yogyakarta</div>
+        <p style="margin:12px 0 0;font-size:15px;line-height:1.62;color:rgba(23,21,34,.85)">Participated as a contestant in the national student UI/UX Design Competition, designing around the theme of developing ideas and innovation to support the Sustainable Development Goals (SDGs).</p>
+        <div style="margin-top:16px;background:rgba(255,253,248,.6);border-radius:14px;padding:12px 16px"><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(23,21,34,.65)">FOCUS</div><div style="margin-top:4px;font-size:14px;font-weight:600">UI/UX Design • Ideation • SDGs • Prototyping</div></div>
+      </article>
+
+      <article data-rv="left" data-screen-label="Journey 05" style="position:sticky;top:184px;background:#B9A5FF;border:2px solid #171522;border-radius:26px;padding:clamp(20px,3vw,30px);overflow:hidden;box-shadow:0 -12px 34px rgba(23,21,34,.10)">
+        <span aria-hidden="true" style="position:absolute;top:-16px;right:12px;font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(86px,9vw,126px);color:rgba(23,21,34,.13);letter-spacing:-.05em;pointer-events:none">05</span>
+        <span style="display:inline-grid;place-items:center;width:46px;height:46px;border-radius:50%;background:rgba(255,253,248,.9);border:1.5px solid #171522;font-size:19px">◈</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:18px 0 0;position:relative">
+          
+          <image-slot id="j5-a" shape="rounded" radius="12" src="uploads/Raihana%20Sakhi%20Aswanda%20-%20JWP_pages-to-jpg-0003.jpg" fit="cover" position="50% 0%" placeholder="Certificate" style="display: block; width: 206px; height: 170px; aspect-ratio: 16/10; border-radius: 0px"></image-slot><image-slot id="j5-b" shape="rounded" radius="12" src="uploads/Raihana%20Sakhi%20Aswanda%20-%20JWP_pages-to-jpg-0002.jpg" fit="cover" position="50% 100%" placeholder="Competency units" style="display: block; width: 100%; height: auto; aspect-ratio: 16/10; border-radius: 0px"></image-slot>
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin:18px 0 0;flex-wrap:wrap">
+          <h3 style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:22px;letter-spacing:-0.01em">Junior Web Programmer</h3>
+          <span style="display:inline-flex;align-items:center;gap:5px;background:#171522;color:#FAF7F0;font-family:'Space Mono',monospace;font-weight:700;font-size:12px;letter-spacing:.06em;padding:4px 11px;border-radius:999px">BNSP CERTIFIED</span>
+        </div>
+        <div style="margin-top:6px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Badan Nasional Sertifikasi Profesi • LSP UPN “Veteran” Jatim</div>
+        <div style="margin-top:3px;font-family:'Space Mono',monospace;font-size:13px;color:rgba(23,21,34,.75)">Nov 2025 • Surabaya • Valid 3 years</div>
+        <p style="margin:12px 0 0;font-size:15px;line-height:1.62;color:rgba(23,21,34,.85)">Nationally certified as a Junior Web Programmer in the field of Programming — covering data structures, user interface implementation, structured programming, code documentation, and debugging based on SKKNI standards.</p>
+        <div style="margin-top:16px;background:rgba(255,253,248,.6);border-radius:14px;padding:12px 16px"><div style="font-family:'Space Mono',monospace;font-size:10px;letter-spacing:.18em;color:rgba(23,21,34,.65)">COMPETENCIES</div><div style="margin-top:4px;font-size:14px;font-weight:600">Structured Programming • UI Implementation • Debugging • Code Docs</div></div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="stats" data-screen-label="Snapshot" style="padding:clamp(70px,10vw,120px) 0 clamp(90px,11vw,130px)">
+  <div style="width:min(980px,92vw);margin:0 auto;text-align:center">
+    <h2 data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(34px,4.4vw,52px);letter-spacing:-0.025em">A <span style="display:inline-block;background:#7DD3FC;padding:0 12px 4px;border-radius:8px;transform:rotate(-1.4deg) skewX(-4deg)">Snapshot</span> of My Journey</h2>
+    <p data-rv="up" data-rvd=".08s" style="margin:18px auto 0;max-width:600px;font-size:16.5px;line-height:1.65;color:#5C5870">These numbers represent my learning journey through internships, certifications, UI/UX projects, leadership experiences, and continuous skill development.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-top:46px">
+      <div data-rv="pop" style="display:flex;align-items:center;gap:14px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:14px 26px 14px 22px;box-shadow:4px 6px 0 rgba(23,21,34,.08)"><span data-num="" data-target="7" data-suffix="+" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(28px,3.2vw,40px);color:#5B3DF5;letter-spacing:-.03em">7+</span><span style="font-size:14.5px;font-weight:500;max-width:140px;line-height:1.3;text-align:left">UI/UX Projects</span></div>
+      <div data-rv="pop" data-rvd=".07s" style="display:flex;align-items:center;gap:14px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:14px 26px 14px 22px;box-shadow:4px 6px 0 rgba(23,21,34,.08)"><span data-num="" data-target="150" data-suffix="+" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(28px,3.2vw,40px);color:#FF6B5B;letter-spacing:-.03em">150+</span><span style="font-size:14.5px;font-weight:500;max-width:140px;line-height:1.3;text-align:left">Mobile Screens</span></div>
+      <div data-rv="pop" data-rvd=".14s" style="display:flex;align-items:center;gap:14px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:14px 26px 14px 22px;box-shadow:4px 6px 0 rgba(23,21,34,.08)"><span data-num="" data-target="4" data-suffix="" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(28px,3.2vw,40px);color:#0895E0;letter-spacing:-.03em">4</span><span style="font-size:14.5px;font-weight:500;max-width:150px;line-height:1.3;text-align:left">Professional Certifications</span></div>
+      <div data-rv="pop" data-rvd=".21s" style="display:flex;align-items:center;gap:14px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:14px 26px 14px 22px;box-shadow:4px 6px 0 rgba(23,21,34,.08)"><span data-num="" data-target="2" data-suffix="" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(28px,3.2vw,40px);color:#F0A400;letter-spacing:-.03em">2</span><span style="font-size:14.5px;font-weight:500;max-width:140px;line-height:1.3;text-align:left">Internship Experiences</span></div>
+      <div data-rv="pop" data-rvd=".28s" style="display:flex;align-items:center;gap:14px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:14px 26px 14px 22px;box-shadow:4px 6px 0 rgba(23,21,34,.08)"><span data-num="" data-target="15" data-suffix="+" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(28px,3.2vw,40px);color:#84A821;letter-spacing:-.03em">15+</span><span style="font-size:14.5px;font-weight:500;max-width:140px;line-height:1.3;text-align:left">Volunteer Roles</span></div>
+      <div data-rv="pop" data-rvd=".35s" style="display:flex;align-items:center;gap:14px;background:#FFFDF8;border:1.5px solid rgba(23,21,34,.16);border-radius:999px;padding:14px 26px 14px 22px;box-shadow:4px 6px 0 rgba(23,21,34,.08)"><span data-num="" data-target="5" data-suffix="+" style="font-family:'Space Mono',monospace;font-weight:700;font-size:clamp(28px,3.2vw,40px);color:#5B3DF5;letter-spacing:-.03em">5+</span><span style="font-size:14.5px;font-weight:500;max-width:170px;line-height:1.3;text-align:left">Dashboards &amp; Data Analysis Projects</span></div>
+    </div>
+  </div>
+</section>
+
+<section id="contact" data-screen-label="Contact CTA" style="scroll-margin-top:90px;position:relative;background:#0F0E17;border-radius:clamp(28px,4vw,48px) clamp(28px,4vw,48px) 0 0;padding:clamp(90px,12vw,150px) 0 0;overflow:hidden">
+  <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(800px 400px at 50% 0%,rgba(91,61,245,.22),transparent 70%)"></div>
+  <div data-rv="up" style="position:relative;width:min(860px,92vw);margin:0 auto;text-align:center">
+    <div style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.24em;color:#C6F24E">✳ AVAILABLE FOR INTERNSHIPS, PROJECTS, AND COLLABORATIONS</div>
+    <h2 style="margin:22px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(40px,6.4vw,80px);line-height:1.08;letter-spacing:-0.03em">
+      <span data-anim="" style="background:linear-gradient(90deg,#A78BFA,#FF6B5B,#FFC94D,#A78BFA);background-size:300% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;animation:gradShift 9s linear infinite;display:inline-block;padding-bottom:.08em">Let's build something<br><em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400">thoughtful</em> together.</span>
+    </h2>
+    <p style="margin:24px auto 0;max-width:620px;font-size:16.5px;line-height:1.7;color:#A5A1B8">I'm open to UI/UX, front-end development, data analytics, and community-driven digital projects. If you have an idea, role, or collaboration in mind, I'd love to hear the story behind it.</p>
+    <div style="display:flex;flex-wrap:wrap;justify-content:center;gap:14px;margin-top:40px">
+      <a data-mag="" href="mailto:raihanasakhi027@gmail.com" style="display:inline-block;background:#5B3DF5;color:#FFFDF8;padding:15px 32px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;transition:box-shadow .3s ease" style-hover="box-shadow:0 0 40px rgba(91,61,245,.6)">Email me</a>
+      <a data-mag="" href="https://www.linkedin.com/in/raihansakhiaswanda/" target="_blank" rel="noopener" style="display:inline-block;background:transparent;color:#FFFDF8;border:1.5px solid rgba(255,255,255,.3);padding:13.5px 32px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;transition:box-shadow .3s ease,border-color .3s ease" style-hover="box-shadow:0 0 30px rgba(255,255,255,.18);border-color:rgba(255,255,255,.7)">LinkedIn</a>
+      <a data-mag="" href="uploads/Raihana_Sakhi_Aswanda_CV.pdf" target="_blank" rel="noopener" download style="display:inline-block;background:#C6F24E;color:#171522;text-decoration:none;font-family:inherit;padding:15px 32px;border-radius:999px;font-weight:600;font-size:16px;transition:box-shadow .3s ease" style-hover="box-shadow:0 0 40px rgba(198,242,78,.5)">Download CV</a>
+    </div>
+  </div>
+  <footer data-screen-label="Footer" style="position:relative;margin-top:clamp(70px,9vw,110px);border-top:1px solid rgba(255,255,255,.12)">
+    <div style="width:min(1140px,92vw);margin:0 auto;padding:26px 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px">
+      <div style="font-size:14px;color:#8B87A0">© 2026 Raihana Sakhi. Designed and built with care.</div>
+      <div style="display:flex;gap:22px">
+        <a href="#project" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">Portfolio</a>
+        <a href="#about" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">About Me</a>
+        <a href="#top" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+</section>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;motion&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;cursorFx&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;marqueeSpeed&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:38,&quot;min&quot;:16,&quot;max&quot;:80,&quot;step&quot;:1,&quot;unit&quot;:&quot;s&quot;,&quot;tsType&quot;:&quot;number&quot;,&quot;section&quot;:&quot;Motion&quot;}}">
+class Component extends DCLogic {
+  renderVals() { return {}; }
+
+  componentDidMount() {
+    this.cleanups = [];
+    this.shown = new Set();
+    this.fine = matchMedia('(pointer:fine)').matches;
+    this.wideMq = matchMedia('(min-width: 760px)');
+    this.motion = (this.props.motion ?? true) && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    this.setupAll();
+  }
+
+  componentDidUpdate() {
+    this.applyTweaks();
+    this.syncReveals();
+    document.querySelectorAll('[data-num][data-done]').forEach(el => { el.textContent = el.dataset.target + (el.dataset.suffix || ''); });
+    document.querySelectorAll('[data-pct][data-done]').forEach(el => { el.textContent = el.dataset.pct + '%'; });
+    this.layoutStack();
+  }
+
+  componentWillUnmount() {
+    (this.cleanups || []).forEach(f => f());
+    cancelAnimationFrame(this.raf);
+    cancelAnimationFrame(this.cRaf);
+  }
+
+  on(t, e, f, o) { t.addEventListener(e, f, o); this.cleanups.push(() => t.removeEventListener(e, f, o)); }
+
+  setupAll() {
+    this.applyTweaks();
+    this.initReveals();
+    this.initBars();
+    this.initStats();
+    this.initStack();
+    this.initNav();
+    this.initProjects();
+    this.initLightbox();
+    if (this.fine && this.motion && (this.props.cursorFx ?? true)) this.initCursor();
+    if (this.fine) this.initMagnetic();
+    if (this.motion) this.tick();
+  }
+
+  // ---- scroll reveals -------------------------------------------------
+  // Hidden/shown states live in CSS keyed off the data-shown attribute
+  // (which React does not manage), so re-renders can't wipe the reveal.
+  revealEl(el) {
+    el.style.transitionDelay = el.dataset.rvd || '0s';
+    el.setAttribute('data-shown', '1');
+    this.shown.add(el);
+  }
+
+  initReveals() {
+    if (!this.motion) {
+      document.querySelectorAll('[data-rv]').forEach(el => { el.setAttribute('data-shown', '1'); this.shown.add(el); });
+      return;
+    }
+    // rect-based check ignores ancestor overflow clipping (IntersectionObserver does not)
+    this.checkReveals();
+    const onScroll = () => this.checkReveals();
+    this.on(window, 'scroll', onScroll, { passive: true });
+    this.on(window, 'resize', onScroll, { passive: true });
+  }
+
+  checkReveals() {
+    if (!this.motion) return;
+    const vh = innerHeight;
+    document.querySelectorAll('[data-rv]:not([data-shown])').forEach(el => {
+      const r = el.getBoundingClientRect();
+      if (r.top < vh * 0.9 && r.bottom > 0) this.revealEl(el);
+    });
+  }
+
+  // after a re-render, rescue any reveal element left hidden
+  syncReveals() { this.checkReveals(); }
+
+  // ---- skill bars ------------------------------------------------------
+  initBars() {
+    const bars = [...document.querySelectorAll('[data-bar]')];
+    const pcts = [...document.querySelectorAll('[data-pct]')];
+    if (!bars.length || !this.motion) return;
+    bars.forEach(b => { b.style.transition = 'none'; b.style.width = '0%'; });
+    pcts.forEach(p => { p.textContent = '0%'; });
+    void document.body.offsetWidth;
+    bars.forEach(b => { b.style.transition = 'width 1.2s cubic-bezier(.22,1,.36,1)'; });
+    const skills = document.getElementById('skills');
+    if (!skills) return;
+    const io = new IntersectionObserver(entries => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      bars.forEach((b, i) => { b.style.transitionDelay = (i * 110) + 'ms'; b.style.width = b.dataset.bar + '%'; });
+      pcts.forEach((p, i) => setTimeout(() => this.countUp(p, +p.dataset.pct, '%', 1100, () => { p.dataset.done = '1'; }), i * 110));
+      io.disconnect();
+    }, { threshold: 0.3 });
+    io.observe(skills);
+    this.cleanups.push(() => io.disconnect());
+  }
+
+  // ---- snapshot count-ups ---------------------------------------------
+  initStats() {
+    const wrap = document.getElementById('stats');
+    if (!wrap) return;
+    const io = new IntersectionObserver(entries => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      wrap.querySelectorAll('[data-num]').forEach((n, i) => {
+        setTimeout(() => this.countUp(n, +n.dataset.target, n.dataset.suffix || '', 1400, () => { n.dataset.done = '1'; }), this.motion ? i * 100 : 0);
+      });
+      io.disconnect();
+    }, { threshold: 0.25 });
+    io.observe(wrap);
+    this.cleanups.push(() => io.disconnect());
+  }
+
+  countUp(el, target, suffix, dur, onDone) {
+    if (!this.motion) { el.textContent = target + suffix; if (onDone) onDone(); return; }
+    const t0 = performance.now();
+    const step = t => {
+      const p = Math.min(1, (t - t0) / dur);
+      el.textContent = Math.round(target * (1 - Math.pow(1 - p, 3))) + suffix;
+      if (p < 1) requestAnimationFrame(step); else if (onDone) onDone();
+    };
+    requestAnimationFrame(step);
+  }
+
+  // ---- hero card stack -------------------------------------------------
+  initStack() {
+    this.layoutStack();
+    this.on(this.wideMq, 'change', () => this.layoutStack());
+    this.on(window, 'resize', () => { if (this.spreadDone) this.layoutStack(); }, { passive: true });
+    const stack = document.getElementById('stack');
+    if (!stack) return;
+    const io = new IntersectionObserver(entries => {
+      if (!entries.some(e => e.isIntersecting)) return;
+      this.spreadDone = true;
+      this.layoutStack();
+      io.disconnect();
+    }, { threshold: 0.3 });
+    io.observe(stack);
+    this.cleanups.push(() => io.disconnect());
+  }
+
+  layoutStack() {
+    const stack = document.getElementById('stack');
+    if (!stack) return;
+    const cards = [...stack.querySelectorAll('[data-stk]')];
+    const wide = this.wideMq.matches;
+    document.querySelectorAll('[data-doodle]').forEach(d => { d.style.display = wide ? '' : 'none'; });
+    if (wide) {
+      stack.style.height = '430px'; stack.style.display = 'block';
+      stack.style.flexDirection = ''; stack.style.alignItems = ''; stack.style.gap = ''; stack.style.padding = '';
+      const dx = Math.min(348, (stack.getBoundingClientRect().width - 380) / 2);
+      const pileX = [-40, 0, 40];        // 1 & 3 peek out to the sides
+      const pileRot = [-9, 0, 8];         // fanned; card 2 (index 1) upright on top
+      const pileScale = [0.95, 1, 0.94];  // 1 & 3 slightly smaller, tucked behind
+      cards.forEach((c, i) => {
+        c.style.position = 'absolute'; c.style.left = '50%'; c.style.marginLeft = '-172px'; c.style.width = '344px';
+        c.style.top = ['10px', '20px', '8px'][i];
+        if (this.spreadDone || !this.motion) {
+          c.style.transitionDelay = this.motion ? (i * 110) + 'ms' : '0ms';
+          c.style.transform = 'translateX(' + ((i - 1) * dx) + 'px) rotate(' + c.dataset.stk + 'deg)';
+        } else {
+          // piled fan: card 2 centered & upright on top, 1 & 3 peeking behind
+          c.style.transform = 'translateX(' + pileX[i] + 'px) rotate(' + pileRot[i] + 'deg) scale(' + pileScale[i] + ')';
+        }
+      });
+    } else {
+      stack.style.height = 'auto'; stack.style.display = 'flex'; stack.style.flexDirection = 'column';
+      stack.style.alignItems = 'center'; stack.style.gap = '18px'; stack.style.padding = '0 4vw';
+      cards.forEach((c, i) => {
+        c.style.position = 'static'; c.style.marginLeft = '0'; c.style.width = 'min(344px,100%)'; c.style.top = 'auto';
+        c.style.transform = 'rotate(' + (c.dataset.stk * 0.3) + 'deg)';
+      });
+    }
+  }
+
+  // ---- navbar ----------------------------------------------------------
+  initNav() {
+    const nav = document.getElementById('nav');
+    const menu = document.getElementById('navlinks');
+    const onScroll = () => {
+      if (!nav) return;
+      const s = scrollY > 36;
+      nav.style.background = s ? 'rgba(250,247,240,.78)' : 'transparent';
+      nav.style.backdropFilter = s ? 'blur(14px) saturate(1.4)' : 'none';
+      nav.style.webkitBackdropFilter = nav.style.backdropFilter;
+      nav.style.boxShadow = s ? '0 10px 30px rgba(23,21,34,.09)' : 'none';
+      nav.style.borderColor = s ? 'rgba(23,21,34,.08)' : 'transparent';
+    };
+    this.on(window, 'scroll', onScroll, { passive: true });
+    onScroll();
+    const layoutNav = () => { if (menu) menu.style.display = this.wideMq.matches ? 'flex' : 'none'; };
+    layoutNav();
+    this.on(this.wideMq, 'change', layoutNav);
+
+    const links = [...document.querySelectorAll('[data-nav]')];
+    const paint = () => links.forEach(l => {
+      const active = l.dataset.active === '1', hov = l.dataset.hovOn === '1';
+      l.style.color = (active || hov) ? '#5B3DF5' : '#171522';
+      l.style.background = active ? 'rgba(91,61,245,.12)' : (hov ? 'rgba(91,61,245,.07)' : 'transparent');
+    });
+    links.forEach(l => {
+      this.on(l, 'mouseenter', () => { l.dataset.hovOn = '1'; paint(); });
+      this.on(l, 'mouseleave', () => { l.dataset.hovOn = '0'; paint(); });
+    });
+    const secIO = new IntersectionObserver(entries => {
+      entries.forEach(en => {
+        if (!en.isIntersecting) return;
+        links.forEach(l => { l.dataset.active = l.getAttribute('href') === '#' + en.target.id ? '1' : '0'; });
+        paint();
+      });
+    }, { rootMargin: '-40% 0px -55% 0px' });
+    ['about', 'project', 'experience', 'contact'].forEach(id => { const s = document.getElementById(id); if (s) secIO.observe(s); });
+    this.cleanups.push(() => secIO.disconnect());
+  }
+
+  // ---- project cards: hover accent + parallax loop ----------------------
+  initProjects() {
+    document.querySelectorAll('[data-proj]').forEach(card => {
+      const mock = card.querySelector('[data-mock]');
+      this.on(card, 'mouseenter', () => {
+        card.style.borderColor = card.dataset.accent;
+        card.style.boxShadow = '0 24px 60px rgba(23,21,34,.10)';
+        if (mock) mock.dataset.zoom = '1.03';
+      });
+      this.on(card, 'mouseleave', () => {
+        card.style.borderColor = 'rgba(23,21,34,.12)';
+        card.style.boxShadow = '0 1px 0 rgba(23,21,34,.04)';
+        if (mock) mock.dataset.zoom = '1';
+      });
+    });
+  }
+
+  tick() {
+    const els = [...document.querySelectorAll('[data-para]')];
+    const loop = () => {
+      this.raf = requestAnimationFrame(loop);
+      if (!this.wideMq.matches) return;
+      const vh = innerHeight;
+      els.forEach(el => {
+        const host = el.parentElement;
+        const r = host.getBoundingClientRect();
+        if (r.bottom < -100 || r.top > vh + 100) return;
+        const target = (r.top + r.height / 2 - vh / 2) * -(+el.dataset.para || 0.06);
+        el._y = el._y === undefined ? target : el._y + (target - el._y) * 0.18;
+        const zt = +(el.dataset.zoom || 1);
+        el._z = el._z === undefined ? 1 : el._z + (zt - el._z) * 0.12;
+        el.style.transform = 'translateY(' + el._y.toFixed(2) + 'px) scale(' + el._z.toFixed(4) + ')';
+      });
+    };
+    loop();
+  }
+
+  // ---- lightbox for journey card images ----------------------------------
+  initLightbox() {
+    const box = document.getElementById('lightbox');
+    const img = document.getElementById('lightbox-img');
+    if (!box || !img) return;
+    document.querySelectorAll('#experience image-slot[src]').forEach(el => { el.style.cursor = 'zoom-in'; });
+    const close = () => { box.style.display = 'none'; document.body.style.overflow = ''; img.removeAttribute('src'); };
+    const open = src => {
+      img.src = src;
+      box.style.display = 'flex';
+      box.style.animation = 'lbIn .25s ease both';
+      img.style.animation = 'lbZoom .3s cubic-bezier(.22,1,.36,1) both';
+      document.body.style.overflow = 'hidden';
+    };
+    this.on(document, 'click', e => {
+      const slot = e.target.closest && e.target.closest('#experience image-slot[src]');
+      if (slot) { const src = slot.getAttribute('src'); if (src) { e.preventDefault(); open(src); } }
+    });
+    this.on(box, 'click', close);
+    this.on(document, 'keydown', e => { if (e.key === 'Escape' && box.style.display === 'flex') close(); });
+    this.cleanups.push(() => { document.body.style.overflow = ''; });
+  }
+
+  // ---- custom cursor -----------------------------------------------------
+  initCursor() {
+    const cur = document.getElementById('cur');
+    if (!cur) return;
+    const st = document.createElement('style');
+    st.textContent = '@media (pointer:fine){ *{cursor:none !important} }';
+    document.head.appendChild(st);
+    this.cleanups.push(() => st.remove());
+    let x = innerWidth / 2, y = innerHeight / 2, tx = x, ty = y, s = 1, ts = 1;
+    this.on(document, 'mousemove', e => { tx = e.clientX; ty = e.clientY; cur.style.opacity = '1'; });
+    this.on(document, 'mouseover', e => {
+      ts = e.target.closest && e.target.closest('a,button,[data-hov],image-slot') ? 3 : 1;
+    });
+    this.on(document.documentElement, 'mouseleave', () => { cur.style.opacity = '0'; });
+    const loop = () => {
+      x += (tx - x) * 0.22; y += (ty - y) * 0.22; s += (ts - s) * 0.16;
+      cur.style.transform = 'translate(' + (x - 5) + 'px,' + (y - 5) + 'px) scale(' + s.toFixed(3) + ')';
+      this.cRaf = requestAnimationFrame(loop);
+    };
+    loop();
+    this.cleanups.push(() => cancelAnimationFrame(this.cRaf));
+  }
+
+  // ---- magnetic buttons ---------------------------------------------------
+  initMagnetic() {
+    document.querySelectorAll('[data-mag]').forEach(b => {
+      b.style.transition = (b.style.transition ? b.style.transition + ',' : '') + 'transform .3s cubic-bezier(.22,1,.36,1)';
+      this.on(b, 'mousemove', e => {
+        const r = b.getBoundingClientRect();
+        const dx = (e.clientX - r.left - r.width / 2) * 0.18;
+        const dy = (e.clientY - r.top - r.height / 2) * 0.3;
+        b.style.transform = 'translate(' + dx.toFixed(1) + 'px,' + dy.toFixed(1) + 'px) scale(1.05)';
+      });
+      this.on(b, 'mouseleave', () => { b.style.transform = 'translate(0,0) scale(1)'; });
+    });
+  }
+
+  // ---- tweaks ---------------------------------------------------------------
+  applyTweaks() {
+    const dur = this.props.marqueeSpeed ?? 38;
+    const m1 = document.getElementById('mq1'), m2 = document.getElementById('mq2');
+    if (m1) m1.style.animationDuration = dur + 's';
+    if (m2) m2.style.animationDuration = Math.round(dur * 1.18) + 's';
+    const anims = (this.props.motion ?? true) && !matchMedia('(prefers-reduced-motion: reduce)').matches;
+    document.querySelectorAll('[data-anim]').forEach(el => { el.style.animationPlayState = anims ? 'running' : 'paused'; });
+  }
+}
+</script>
+</body>
+</html>
