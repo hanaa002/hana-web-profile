@@ -39,6 +39,15 @@
     [data-rv="line"]{transform:translateY(110%)}
     [data-rv][data-shown]{opacity:1 !important;transform:none !important}
     [data-rv="rot"][data-shown]{transform:rotate(-8deg) !important}
+    #hamburger{display:none}
+    @media(max-width:759px){
+      .mob-hide{display:none !important}
+      #hamburger{display:grid !important}
+      .exp-intro{position:static !important;top:auto !important}
+    }
+    @media(min-width:760px){
+      #mobmenu{display:none !important}
+    }
   </style>
 </helmet>
 
@@ -57,7 +66,21 @@
     <a data-nav="" href="#experience" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:background .25s ease,color .25s ease">Experience</a>
     <a data-nav="" href="#contact" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:background .25s ease,color .25s ease">Contact Me</a>
   </div>
+  <button id="hamburger" aria-label="Open menu" aria-expanded="false" style="place-items:center;width:44px;height:44px;border-radius:50%;border:1px solid rgba(23,21,34,.16);background:rgba(255,253,248,.7);cursor:pointer;padding:0">
+    <span style="position:relative;display:block;width:19px;height:13px">
+      <span data-hb="1" style="position:absolute;top:0;left:0;width:100%;height:2px;background:#171522;border-radius:2px;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .2s ease"></span>
+      <span data-hb="2" style="position:absolute;top:5.5px;left:0;width:100%;height:2px;background:#171522;border-radius:2px;transition:opacity .2s ease"></span>
+      <span data-hb="3" style="position:absolute;top:11px;left:0;width:100%;height:2px;background:#171522;border-radius:2px;transition:transform .3s cubic-bezier(.22,1,.36,1),opacity .2s ease"></span>
+    </span>
+  </button>
 </nav>
+
+<div id="mobmenu" style="position:fixed;top:68px;left:3vw;right:3vw;z-index:79;flex-direction:column;gap:2px;padding:10px;border-radius:22px;background:rgba(250,247,240,.92);backdrop-filter:blur(16px) saturate(1.4);-webkit-backdrop-filter:blur(16px) saturate(1.4);border:1px solid rgba(23,21,34,.1);box-shadow:0 22px 46px rgba(23,21,34,.16);opacity:0;pointer-events:none;transform:translateY(-8px) scale(.98);transition:opacity .28s ease,transform .28s cubic-bezier(.22,1,.36,1)">
+  <a href="#about" style="color:#171522;text-decoration:none;font-size:16px;font-weight:500;padding:14px 16px;border-radius:14px;transition:background .2s ease" style-hover="background:rgba(91,61,245,.08)">About Me</a>
+  <a href="#project" style="color:#171522;text-decoration:none;font-size:16px;font-weight:500;padding:14px 16px;border-radius:14px;transition:background .2s ease" style-hover="background:rgba(91,61,245,.08)">Project</a>
+  <a href="#experience" style="color:#171522;text-decoration:none;font-size:16px;font-weight:500;padding:14px 16px;border-radius:14px;transition:background .2s ease" style-hover="background:rgba(91,61,245,.08)">Experience</a>
+  <a href="#contact" style="display:flex;align-items:center;justify-content:space-between;color:#FFFDF8;background:#5B3DF5;text-decoration:none;font-size:16px;font-weight:600;padding:14px 18px;border-radius:14px;margin-top:4px">Contact Me<span>↗</span></a>
+</div>
 
 <header id="top" data-screen-label="Hero" style="position:relative;padding-top:clamp(120px,16vh,175px)">
   <div style="position:absolute;inset:0;pointer-events:none;background:radial-gradient(900px 480px at 50% -10%,rgba(91,61,245,.10),transparent 70%)"></div>
@@ -73,7 +96,7 @@
     <div data-doodle="" data-anim="" style="position:absolute;right:3%;top:6%;animation:floatB 5.4s ease-in-out infinite alternate">
       <svg width="46" height="52" viewBox="0 0 44 50" fill="none"><path d="M10 14 L14 44 a3 3 0 0 0 3 2.6 h10 a3 3 0 0 0 3-2.6 L34 14 Z" fill="#FFFDF8" stroke="#171522" stroke-width="1.6" stroke-linejoin="round"></path><path d="M8 14 H36" stroke="#171522" stroke-width="1.6" stroke-linecap="round"></path><path d="M12 22 H32" stroke="#7DD3FC" stroke-width="3" stroke-linecap="round"></path><path d="M17 4 C 19 7, 15 9, 17 12 M25 3 C 27 6, 23 8, 25 11" stroke="#171522" stroke-width="1.4" stroke-linecap="round"></path></svg>
     </div>
-    <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .9s both;position:absolute;right:1%;top:58%">
+    <span style="display:inline-block;animation:wordUp .7s cubic-bezier(.22,1,.36,1) .9s both;position:absolute;right:1%;top:58%" class="mob-hide">
       <a data-anim="" href="#contact" style="display:inline-block;background:#FF6B5B;color:#FFFDF8;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:999px;text-decoration:none;box-shadow:3px 5px 0 rgba(23,21,34,.9);border:1.5px solid #171522;animation:floatB 5.5s ease-in-out infinite alternate">Let's Connect ↗</a>
     </span>
 
@@ -202,7 +225,7 @@
         <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#5B3DF5"></span>UI/UX DESIGN • INTERACTIVE PROTOTYPE</div>
         <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">Ternovia</h3>
         <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">Designing a livestock marketplace that streamlines cattle trading and connects farmers, buyers, and government agencies in one trusted platform.</p>
-        <a href="project-detail.html?p=ternovia" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#5B3DF5">View Project<span>→</span></a>
+        <a href="Project Detail.dc.html?p=ternovia" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#5B3DF5">View Project<span>→</span></a>
       </div>
       <div style="position:relative;border-radius:22px;background:#EDE8FF;min-height:clamp(300px,34vw,430px);overflow:hidden">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
@@ -218,7 +241,7 @@
         <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#F0A400"></span>UI/UX DESIGN • BUSINESS ANALYSIS • MOBILE DEV</div>
         <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">T-Space</h3>
         <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">Designing a location-based platform that helps users discover and access public facilities more efficiently.</p>
-        <a href="project-detail.html?p=tspace" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#F0A400">View Project<span>→</span></a>
+        <a href="Project Detail.dc.html?p=tspace" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#F0A400">View Project<span>→</span></a>
       </div>
       <div style="position:relative;border-radius:22px;background:#FFF3D4;min-height:clamp(300px,34vw,430px);overflow:hidden">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
@@ -234,7 +257,7 @@
         <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#0895E0"></span>UI/UX DESIGN • MOBILE APP</div>
         <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">DentalRave</h3>
         <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">A playful dental-care companion for kids — making oral hygiene fun through gamified reminders and progress tracking.</p>
-        <a href="project-detail.html?p=dentalrave" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#0895E0">View Project<span>→</span></a>
+        <a href="Project Detail.dc.html?p=dentalrave" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#0895E0">View Project<span>→</span></a>
       </div>
       <div style="position:relative;border-radius:22px;background:#E2F4FE;min-height:clamp(300px,34vw,430px);overflow:hidden">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
@@ -250,7 +273,7 @@
         <div style="display:flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:11.5px;letter-spacing:.18em;color:#5C5870"><span style="width:9px;height:9px;border-radius:50%;background:#FF6B5B"></span>UI/UX DESIGN • MOBILE APP</div>
         <h3 style="margin:16px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(30px,3.6vw,42px);letter-spacing:-0.02em">EventU</h3>
         <p style="margin:14px 0 0;max-width:46ch;font-size:16.5px;line-height:1.68;color:#5C5870">A campus event platform that helps students discover, register, and manage university events in one place.</p>
-        <a href="project-detail.html?p=eventu" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#FF6B5B">View Project<span>→</span></a>
+        <a href="Project Detail.dc.html?p=eventu" data-hov="" style="display:inline-flex;align-items:center;gap:10px;margin-top:26px;background:#171522;color:#FAF7F0;text-decoration:none;font-weight:600;font-size:15px;padding:14px 26px;border-radius:999px;transition:gap .3s cubic-bezier(.22,1,.36,1),background .3s ease" style-hover="gap:20px;background:#FF6B5B">View Project<span>→</span></a>
       </div>
       <div style="position:relative;border-radius:22px;background:#FFE8E4;min-height:clamp(300px,34vw,430px);overflow:hidden">
         <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
@@ -279,7 +302,7 @@
 
 <section id="experience" data-screen-label="Professional Journey" style="scroll-margin-top:90px;width:min(1560px,calc(100vw - 20px));margin:0 auto;background:#EFEAFE;border-radius:clamp(28px,4vw,48px);padding:clamp(70px,9vw,110px) 0">
   <div style="width:min(1140px,92vw);margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(420px,100%),1fr));gap:clamp(40px,5vw,72px);align-items:start">
-    <div style="position:sticky;top:110px;align-self:start">
+    <div class="exp-intro" style="position:sticky;top:110px;align-self:start">
       <div data-rv="up" style="font-family:'Space Mono',monospace;font-size:12px;letter-spacing:.22em;color:#5B3DF5;font-weight:700">✦ EXPERIENCE</div>
       <h2 data-rv="up" data-rvd=".06s" style="margin:14px 0 0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(36px,4.6vw,56px);line-height:1.06;letter-spacing:-0.025em">Professional<br><em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:#5B3DF5">Journey</em></h2>
       <p data-rv="up" data-rvd=".12s" style="margin:22px 0 0;max-width:44ch;font-size:16.5px;line-height:1.7;color:#5C5870">My journey spans UI/UX design, software development, business analysis, data analytics, and community leadership. Through internships, academic projects, and organizational experiences, I have collaborated with multidisciplinary teams to solve real-world problems and create user-centered digital products.</p>
@@ -610,6 +633,29 @@ class Component extends DCLogic {
     const layoutNav = () => { if (menu) menu.style.display = this.wideMq.matches ? 'flex' : 'none'; };
     layoutNav();
     this.on(this.wideMq, 'change', layoutNav);
+
+    // mobile hamburger menu
+    const burger = document.getElementById('hamburger');
+    const mob = document.getElementById('mobmenu');
+    if (burger && mob) {
+      mob.style.display = 'flex';
+      const bars = burger.querySelectorAll('[data-hb]');
+      const setOpen = o => {
+        mob.dataset.open = o ? '1' : '0';
+        mob.style.opacity = o ? '1' : '0';
+        mob.style.pointerEvents = o ? 'auto' : 'none';
+        mob.style.transform = o ? 'translateY(0) scale(1)' : 'translateY(-8px) scale(.98)';
+        burger.setAttribute('aria-expanded', o ? 'true' : 'false');
+        if (bars[0]) bars[0].style.transform = o ? 'translateY(5.5px) rotate(45deg)' : 'none';
+        if (bars[1]) bars[1].style.opacity = o ? '0' : '1';
+        if (bars[2]) bars[2].style.transform = o ? 'translateY(-5.5px) rotate(-45deg)' : 'none';
+      };
+      setOpen(false);
+      this.on(burger, 'click', e => { e.stopPropagation(); setOpen(mob.dataset.open !== '1'); });
+      mob.querySelectorAll('a').forEach(a => this.on(a, 'click', () => setOpen(false)));
+      this.on(document, 'click', e => { if (mob.dataset.open === '1' && !mob.contains(e.target) && !burger.contains(e.target)) setOpen(false); });
+      this.on(this.wideMq, 'change', () => { if (this.wideMq.matches) setOpen(false); });
+    }
 
     const links = [...document.querySelectorAll('[data-nav]')];
     const paint = () => links.forEach(l => {
