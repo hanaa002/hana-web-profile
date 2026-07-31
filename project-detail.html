@@ -60,11 +60,11 @@
 </sc-if>
 
 <nav id="nav" aria-label="Main" style="position:fixed;top:14px;left:50%;transform:translateX(-50%);width:min(1160px,94vw);z-index:80;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:10px 14px 10px 22px;border-radius:999px;border:1px solid transparent;background:transparent;transition:background .35s ease,box-shadow .35s ease,border-color .35s ease">
-  <a href="index.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#171522;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px"><span style="color:#5B3DF5;font-size:18px;line-height:1">✦</span><span>Hana's Portfolio</span></a>
+  <a href="Portfolio.dc.html" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#171522;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:17px"><span style="color:#5B3DF5;font-size:18px;line-height:1">✦</span><span>Hana's Portfolio</span></a>
   <div id="navlinks" style="display:flex;align-items:center;gap:2px">
-    <a href="index.html#about" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">About Me</a>
-    <a href="index.html#project" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Project</a>
-    <a href="index.html#experience" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Experience</a>
+    <a href="Portfolio.dc.html#about" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">About Me</a>
+    <a href="Portfolio.dc.html#project" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Project</a>
+    <a href="Portfolio.dc.html#experience" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Experience</a>
     <a href="#contact" style="color:#171522;text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:999px;transition:color .25s ease" style-hover="color:#5B3DF5">Contact Me</a>
   </div>
 </nav>
@@ -315,6 +315,7 @@
           <sc-if value="{{hasClosingIntro}}" hint-placeholder-val="{{ false }}">
             <p style="margin:18px 0 0;font-size:16px;line-height:1.65;opacity:.9;max-width:52ch">{{closingIntro}}</p>
           </sc-if>
+          <sc-if value="{{closingPtsInline}}" hint-placeholder-val="{{ true }}">
           <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px;margin-top:30px">
             <sc-for list="{{closingPoints}}" as="pt" hint-placeholder-count="3">
               <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:18px;padding:16px 18px;backdrop-filter:blur(4px)">
@@ -323,7 +324,18 @@
               </div>
             </sc-for>
           </div>
+          </sc-if>
         </div>
+        <sc-if value="{{closingSplit}}" hint-placeholder-val="{{ false }}">
+          <div style="display:grid;gap:12px">
+            <sc-for list="{{closingPoints}}" as="pt" hint-placeholder-count="4">
+              <div style="background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.25);border-radius:16px;padding:14px 18px;backdrop-filter:blur(4px)">
+                <div style="font-weight:700;font-size:15px;font-family:'Space Grotesk',sans-serif">{{pt.t}}</div>
+                <div style="margin-top:5px;font-size:13.5px;line-height:1.5;opacity:.85">{{pt.d}}</div>
+              </div>
+            </sc-for>
+          </div>
+        </sc-if>
         <sc-if value="{{closingImgOn}}" hint-placeholder-val="{{ false }}">
           <div data-anim style="animation:floatP 7s ease-in-out infinite alternate">{{closingCompanionEl}}</div>
         </sc-if>
@@ -349,7 +361,7 @@
   <div style="width:min(1140px,92vw);margin:0 auto">
     <div style="display:flex;align-items:baseline;justify-content:space-between;gap:16px;flex-wrap:wrap">
       <h2 data-rv="up" style="margin:0;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:clamp(28px,3.8vw,44px);letter-spacing:-0.025em">Related <em style="font-family:'Instrument Serif',serif;font-style:italic;font-weight:400;color:{{accent}}">Projects</em></h2>
-      <a href="index.html#project" style="display:inline-flex;align-items:center;gap:8px;color:#171522;text-decoration:none;font-weight:600;font-size:15px;border-bottom:2px solid {{accent}};padding-bottom:2px;transition:gap .3s cubic-bezier(.22,1,.36,1)" style-hover="gap:14px">See All Projects<span>→</span></a>
+      <a href="Portfolio.dc.html#project" style="display:inline-flex;align-items:center;gap:8px;color:#171522;text-decoration:none;font-weight:600;font-size:15px;border-bottom:2px solid {{accent}};padding-bottom:2px;transition:gap .3s cubic-bezier(.22,1,.36,1)" style-hover="gap:14px">See All Projects<span>→</span></a>
     </div>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(360px,100%),1fr));gap:22px;margin-top:34px">
       <sc-for list="{{related}}" as="r" hint-placeholder-count="2">
@@ -390,8 +402,8 @@
     <div style="width:min(1140px,92vw);margin:0 auto;padding:26px 0;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px">
       <div style="font-size:14px;color:#8B87A0">© 2026 Raihana Sakhi. Designed and built with care.</div>
       <div style="display:flex;gap:22px">
-        <a href="index.html#project" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">Portfolio</a>
-        <a href="index.html#about" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">About Me</a>
+        <a href="Portfolio.dc.html#project" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">Portfolio</a>
+        <a href="Portfolio.dc.html#about" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">About Me</a>
         <a href="#top" style="color:#C9C5DB;text-decoration:none;font-size:14px;transition:color .25s ease" style-hover="color:#C6F24E">Back to top ↑</a>
       </div>
     </div>
@@ -436,7 +448,7 @@ class Component extends DCLogic {
         quote: 'Identified major usability challenges in livestock administration and translated research insights into a scalable digital platform that supports farmers, field officers, and government stakeholders.',
         closingIntro: 'Ternovia helps stakeholders manage livestock information more efficiently, improve communication, and make better decisions through centralized data management.',
         closing: { t: 'Driving Digital Transformation in Livestock Management', points: [{ t: 'Faster Administration', d: 'Digitizing livestock records reduces time spent on manual documentation and reporting.' }, { t: 'Better Data Accuracy', d: 'Centralized information minimizes data duplication and reporting errors.' }, { t: 'Data-Driven Decisions', d: 'Real-time insights support faster and more informed decision-making.' }, { t: 'Operational Efficiency', d: 'Simplified workflows allow stakeholders to focus on livestock development and monitoring activities.' }, { t: 'Published Research', d: 'Published as first author in JIRSI, a SINTA 4 accredited journal — Vol. 5(3), 2026.' }] },
-        banner: false, related: ['pasarin', 'tspace'],
+        banner: false, related: ['awalmulai', 'pasarin'],
       },
       tspace: {
         key: 'tspace', title: 'T-Space', kicker: 'UI/UX DESIGN • BUSINESS ANALYSIS • FLUTTER DEVELOPMENT',
@@ -497,6 +509,35 @@ class Component extends DCLogic {
         closing: { t: 'Transforming Dental Clinic Management', points: [{ t: 'Efficient Appointment Management', d: 'Patients can easily schedule appointments online, reducing manual booking processes and minimizing scheduling conflicts.' }, { t: 'Centralized Patient Records', d: 'Digital medical records enable dentists and staff to securely access patient histories, treatment plans, and clinical documentation in one place.' }, { t: 'Streamlined Clinic Operations', d: 'Integrated operational features improve staff productivity, reduce paperwork, and support more efficient dental services.' }] },
         banner: false, related: ['eventu', 'ternovia'],
       },
+      awalmulai: {
+        key: 'awalmulai', title: 'Awalmulai', kicker: 'UI/UX DESIGN • SAAS • DESIGN SYSTEM',
+        subtitle: 'Designing an end to end career preparation platform that helps Indonesian students and fresh graduates understand themselves through psychometric assessment, then turn that insight into a concrete career direction.',
+        accent: '#2E905C', deep: '#1E7842', soft: '#E8F5EE', on: '#F4FBF8',
+        glow: 'rgba(46,144,92,.30)', glowSoft: 'rgba(46,144,92,.14)',
+        heroType: 'img', heroImg: 'uploads/awalmulai-hero-mockup.png',
+        preview: 'https://awalmulai.id/',
+        bannerImg: 'uploads/awalmulai-screens-grid.png',
+        procGroup: ['Problem Statement', 'Research and Discovery', 'User Research', 'Design Strategy', 'Design System', 'Final Solution'],
+        cover: 'awalmulai-a', closingFullImg: 'uploads/awalmulai-closing.png', closingCardToo: true,
+        ptype: 'Product Design — Career Tech Platform', category: 'UI UX Design, SaaS, Assessment Platform, Design System', role: 'UI UX Designer',
+        introHead: 'From guesswork and generic advice to one unified Career Blueprint.',
+        intro: ['Instead of navigating career choices through guesswork and generic advice, users can measure their personality, interests, work character, and cognitive ability through research based assessments, then receive one unified Career Blueprint that maps out where they fit and what to do next.', 'Awalmulai is a career preparation SaaS platform designed specifically for Indonesian students, fresh graduates, and early career professionals. The product combines four psychometric instruments with an AI powered toolkit — CV Builder, LinkedIn Optimizer, AI Interview, and Web Portfolio — into a single guided journey from self understanding to real world action.', 'This project is an end to end UI/UX case study covering product research, competitive analysis, user research, information architecture, design system creation, high fidelity interface design across the full assessment to report flow, and interactive prototyping.'],
+        goalsHead: 'A focused, affordable, and genuinely actionable career preparation platform.',
+        goals: ['Indonesia produces hundreds of thousands of fresh graduates every year, yet a large share of them enter the workforce without a clear sense of direction. Many choose a major, then a job, without ever measuring what they are actually suited for — relying on external expectation rather than self understanding.', 'Existing solutions fail to close this gap. Most online psychotests are fragmented, one dimensional, and stop at a label — a four letter type, a score, a chart — without translating results into an actionable career direction. Professional career assessment, meanwhile, remains locked behind expensive institutional programs far beyond the reach of an individual student. That gap forms the foundation of the product: a platform built around how young Indonesians actually make decisions about their future.'],
+        sections: [
+          { t: 'Problem Statement', p: 'Young Indonesians are entering the workforce without ever measuring what they are suited for. The data reflects it: most fresh graduates end up in fields unrelated to their degree, repeated career switching early on has become the norm, and the majority admit they regret not doing self assessment sooner.', stats: [{ v: 8, dec: 0, suf: '/10', label: 'Fresh graduates work in fields unrelated to the degree they studied.' }, { v: 4, dec: 0, suf: '\u00D7', label: 'Career switches within the first ten years — now the new norm rather than the exception.' }, { v: 2, dec: 0, suf: '/3', label: 'Admit they regret not doing self assessment earlier in their journey.' }], imgs: [{ src: 'uploads/awalmulai-problems.png', ph: 'Problem statistics' }], cols: 1 },
+          { t: 'Research and Discovery', p: 'I evaluated existing psychometric tools, career platforms, and self assessment products — comparing depth of insight, usability, report quality, and how far each product carried the user beyond the raw result. Four gaps emerged: most psychotests deliver a label rather than a decision, reports overwhelm users with scores instead of guiding a next step, personality and interest and ability live in separate products that never connect, and none are designed around the emotional reality of a young person who feels lost rather than merely curious. These insights became the positioning — assessment as the starting point of a career journey, not an endpoint. Hence awal mulai, the beginning.', cols: 1 },
+          { t: 'User Research', p: 'Research focused on the anxieties, decision patterns, and self perception of students and fresh graduates preparing to enter the workforce. The primary persona represents someone who feels uncertain about their direction — not because they lack ability, but because they have never had a structured way to understand their own potential. Findings showed users value a clear verdict and direction over raw scores, a guided one step at a time journey rather than a wall of tests, reports that feel personal rather than clinical, and tangible next actions attached to their results.', cols: 1 },
+          { t: 'Design Strategy', p: 'The strategy centered on turning complex psychometric data into a journey that feels approachable and genuinely useful: a guided four test journey with visible progress toward one unified Career Blueprint, a quest model on the dashboard that frames assessment as forward momentum, reports designed as narrative rather than a data dump, an integrated AI toolkit so insight flows directly into CV and LinkedIn and portfolio and interview prep, a warm visual language to soften an intimidating topic, and a clear free to premium hierarchy so first time users can start without friction.', cols: 1 },
+          { t: 'Design System', p: 'To keep the experience coherent across landing, dashboard, four distinct test reports, and the flagship Career Blueprint, I built a dedicated design system. It defines a layered green palette — mint for soft backgrounds and illustration, emerald as the primary CTA and success state, teal for supporting meta labels, and a reserved gold accent exclusive to premium tiers. Typography pairs Plus Jakarta Sans for friendly but structured headings, Inter for high legibility body and UI, and JetBrains Mono for metadata. Reusable components — default, featured, and premium card variants, a full button hierarchy, and consistent test category cards — keep every screen part of one product while giving the premium experience its own intentional visual weight.', imgs: [{ src: 'uploads/awalmulai-design-system.png', ph: 'Design system' }], cols: 1 },
+          { t: 'Final Solution', p: 'The final product carries users from uncertainty to direction: measure personality, interest, work character, and cognitive ability through four research based tests; track progress through a guided, gamified journey toward one Career Blueprint; receive a narrative report that names a clear career direction rather than just a type; and turn insight into action through an integrated AI toolkit. The interface emphasizes clarity and warmth through guided navigation, focused report layouts, consistent visual hierarchy, and a reusable component system — letting users complete an inherently complex process with minimal cognitive load.', cols: 1 },
+          { t: 'Reflection', p: 'This project challenged me to make something clinical feel human. Psychometric data is dense by nature, and early report iterations leaned too heavily on charts and dimension scores — technically complete, but emotionally cold for a user anxious about their future. Rather than stripping the depth away, I redesigned the reports around narrative: leading with a clear verdict and story, then layering the supporting data beneath for those who want it. The Career Blueprint became a synthesis, not a spreadsheet.', cols: 1 },
+        ],
+        quote: 'Good product design does not just present data — it meets the user where they are emotionally and gives them a direction they can act on.',
+        closingIntro: 'Awalmulai turns an intimidating, fragmented process into one guided journey — from four research based tests to a single Career Blueprint and the tools to act on it.',
+        closing: { t: 'From Self Understanding to Real World Readiness', points: [{ t: 'Four Tests, One Blueprint', d: 'Personality, interest, work character, and cognitive ability combine into a single unified career direction.' }, { t: 'A Guided, Gamified Journey', d: 'A quest model with visible progress frames assessment as forward momentum instead of a chore.' }, { t: 'Narrative Over Data Dump', d: 'Reports lead with a verdict and a story, layering supporting dimensions beneath for those who want the depth.' }, { t: 'Insight Into Action', d: 'An integrated AI toolkit carries results straight into CV, LinkedIn, portfolio, and interview preparation.' }, { t: 'Accessible by Design', d: 'A clear free to premium hierarchy lets first time users start without friction, with gold reserved for premium tiers.' }] },
+        banner: false, related: ['pasarin', 'ternovia'],
+      },
       pasarin: {
         key: 'pasarin', title: 'Pasarin', kicker: 'UI/UX DESIGN • SAAS • DASHBOARD',
         subtitle: 'Designing an end to end SaaS platform that helps small online sellers monitor competitor prices, receive real time WhatsApp alerts, and make smarter pricing decisions.',
@@ -552,7 +593,7 @@ class Component extends DCLogic {
         ],
         quote: 'A structured design thinking process turned scattered, hard-to-find campus event information into an intuitive experience — validated end to end from empathize through usability testing.',
         closing: { t: 'Transforming Event Experiences', points: [{ t: 'Improved Event Accessibility', d: 'Users can easily discover relevant events through an intuitive interface, reducing the effort required to search across multiple platforms.' }, { t: 'Simplified Registration Process', d: 'A streamlined registration flow minimizes user friction, enabling faster sign-ups and a smoother onboarding experience.' }, { t: 'Enhanced Organizer Efficiency', d: 'Centralized participant management and event monitoring help organizers reduce administrative work and focus on delivering successful events.' }] },
-        banner: true, related: ['pasarin', 'ternovia'],
+        banner: true, related: ['awalmulai', 'ternovia'],
       },
     };
     this.DATA = DATA;
@@ -610,7 +651,8 @@ class Component extends DCLogic {
       closingImgOn: !!p.closingImg, closingSlotOn: !p.closingImg && !p.closingFullImg, closingSrc: p.closingImg || p.closingFullImg || '',
       closingCompanionEl: mkImg(p.closingImg, p.closing.t, { borderRadius: '16px', boxShadow: '0 30px 60px rgba(23,21,34,.3)' }, true),
       closingFullEl: mkImg(p.closingFullImg, p.closing.t, null, true),
-      closingFullOn: !!p.closingFullImg, closingCardOn: !p.closingFullImg,
+      closingFullOn: !!p.closingFullImg, closingCardOn: !p.closingFullImg || !!p.closingCardToo,
+      closingSplit: !!p.closingCardToo, closingPtsInline: !p.closingCardToo,
       ptype: p.ptype, category: p.category, role: p.role, client: p.client || '', hasClient: !!p.client, previewUrl: p.preview || '#', hasPreview: !!p.preview,
       introHead: p.introHead, intro1: p.intro[0], intro2: p.intro[1],
       goalsHead: p.goalsHead || 'Designing a user-centered solution.', goals1: p.goals[0], goals2: p.goals[1],
@@ -636,7 +678,7 @@ class Component extends DCLogic {
       quote: p.quote,
       closingTitle: p.closing.t, closingPoints: p.closing.points, closingIntro: p.closingIntro || '', hasClosingIntro: !!p.closingIntro,
       showBanner: !!p.banner,
-      related: p.related.map(k => ({ key: k, title: D[k].title, cat: D[k].kicker.split('•')[1].trim(), soft: D[k].soft, accent: D[k].accent, cover: D[k].cover, href: 'project-detail.html?p=' + k, mockEl: mkImg(D[k].heroImg, D[k].title + ' mockup', { maxHeight: '210px', width: 'auto', maxWidth: '100%', objectFit: 'contain', margin: '0 auto', filter: 'drop-shadow(0 18px 30px rgba(23,21,34,.22))' }, false) })),
+      related: p.related.map(k => ({ key: k, title: D[k].title, cat: D[k].kicker.split('•')[1].trim(), soft: D[k].soft, accent: D[k].accent, cover: D[k].cover, href: 'Project Detail.dc.html?p=' + k, mockEl: mkImg(D[k].heroImg, D[k].title + ' mockup', { maxHeight: '210px', width: 'auto', maxWidth: '100%', objectFit: 'contain', margin: '0 auto', filter: 'drop-shadow(0 18px 30px rgba(23,21,34,.22))' }, false) })),
     };
   }
 
